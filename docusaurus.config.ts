@@ -31,7 +31,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl:
-            'https://github.com/angelsintheai/neural-commander/tree/main/website/',
+            'https://github.com/angelsintheai/neural-commander-docs/tree/main/',
         },
         blog: false, // Disable blog for now
         theme: {
