@@ -5,48 +5,78 @@ import styles from './styles.module.css';
 
 type FeatureItem = {
   title: string;
-  Svg: React.ComponentType<React.ComponentProps<'svg'>>;
   description: ReactNode;
+  icon: string;
 };
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: 'Session Intelligence',
+    icon: '🧠',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Automatically captures your AI development sessions. Resume exactly where you left off,
+        with full context of what you were working on.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
+    title: 'Learning Capture',
+    icon: '📚',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Every hard-won insight is automatically captured and indexed. Build a knowledge base
+        that grows with your experience.
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
+    title: 'Document Intelligence',
+    icon: '📋',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Automatically scan and index project documentation. Find answers instantly,
+        maintain docs hygiene across all your projects.
+      </>
+    ),
+  },
+  {
+    title: 'Multi-Project Awareness',
+    icon: '🌐',
+    description: (
+      <>
+        Manage multiple projects simultaneously. Share learnings across projects and
+        never repeat the same mistake twice.
+      </>
+    ),
+  },
+  {
+    title: 'Claude Code Integration',
+    icon: '🤖',
+    description: (
+      <>
+        Deep integration with Claude Code for automatic session detection, context injection,
+        and seamless workflow.
+      </>
+    ),
+  },
+  {
+    title: 'Requirements Tracking',
+    icon: '✅',
+    description: (
+      <>
+        Track project requirements from planning to completion. Link requirements to code,
+        tests, and documentation.
       </>
     ),
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({title, icon, description}: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
-      <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+      <div className="text--center" style={{fontSize: '3rem', marginBottom: '1rem'}}>
+        {icon}
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>
@@ -60,6 +90,12 @@ export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
       <div className="container">
+        <div className="text--center" style={{marginBottom: '2rem'}}>
+          <Heading as="h2">Why Neural Commander?</Heading>
+          <p style={{fontSize: '1.1rem', color: 'var(--ifm-color-emphasis-700)'}}>
+            Built for developers who use AI assistants and need to maintain context across sessions.
+          </p>
+        </div>
         <div className="row">
           {FeatureList.map((props, idx) => (
             <Feature key={idx} {...props} />
