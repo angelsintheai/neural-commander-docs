@@ -190,6 +190,158 @@ nc learn "Use PostgreSQL for persistence"
 nc session archive --older-than 30d
 ```
 
+## Auto-Session Tracking
+
+NC can automatically detect and track Claude Code sessions without manual intervention.
+
+### How It Works
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                  Auto-Session Detection                      │
+│                                                              │
+│  ┌──────────┐    ┌──────────┐    ┌──────────┐              │
+│  │  Claude  │    │   NC     │    │ Session  │              │
+│  │   Code   │───▶│  Daemon  │───▶│  Store   │              │
+│  └──────────┘    └──────────┘    └──────────┘              │
+│       │               │                │                    │
+│       │    Watches    │    Extracts    │                    │
+│       │   .claude/    │   session ID,  │                    │
+│       │    files      │   project,     │                    │
+│       │               │   activity     │                    │
+│       │               │                │                    │
+│       ▼               ▼                ▼                    │
+│  ┌──────────────────────────────────────────────────────┐  │
+│  │              Real-time Session Data                   │  │
+│  │  • Session start/end times                           │  │
+│  │  • Message counts                                     │  │
+│  │  • Active working directory                          │  │
+│  │  • Files being modified                              │  │
+│  └──────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Enable Auto-Tracking
+
+Auto-tracking is enabled by default when the daemon runs:
+
+```bash
+# Start daemon (auto-tracking included)
+nc daemon start
+
+# Check tracking status
+nc daemon status
+```
+
+**Output includes**:
+```
+Claude Session Detection: ACTIVE
+Sessions detected: 3
+Active sessions: 1
+```
+
+### What Gets Tracked
+
+| Data | Description |
+|------|-------------|
+| Session ID | Unique identifier from Claude Code |
+| Project | Working directory / project name |
+| Start Time | When session began |
+| Last Activity | Most recent interaction |
+| Message Count | Number of exchanges |
+| Status | active, suspended, crashed |
+
+### View Tracked Sessions
+
+```bash
+# List Claude Code sessions
+nc claude-session list
+
+# View specific session
+nc claude-session show <session-id>
+
+# Show active session
+nc claude-session active
+```
+
+### Watch Mode
+
+Monitor sessions in real-time:
+
+```bash
+nc claude-session watch
+```
+
+**Output**:
+```
+Watching Claude Code sessions... (Ctrl+C to stop)
+
+[14:32:15] Session abc123 STARTED in neural-commander
+[14:35:42] Session abc123: 5 messages exchanged
+[14:38:11] Session abc123: Working on main.go
+[14:45:00] Session abc123 SUSPENDED
+```
+
+### Crash Detection
+
+When a Claude Code session crashes unexpectedly:
+
+1. NC detects the abnormal termination
+2. Marks session as "crashed" with last known state
+3. Preserves context for recovery
+4. Alerts you on next `nc status` check
+
+```bash
+# Check for crashed sessions
+nc claude-session crashed
+
+# Output:
+# CRASHED SESSIONS
+# ================
+# abc123  neural-commander  42 messages  crashed 2h ago
+#   Last activity: Implementing user auth
+#   Files: auth.go, middleware.go
+```
+
+### Configuration
+
+```bash
+# Set detection interval (seconds)
+nc config set claude_session.detect_interval 30
+
+# Set crash timeout (detect crash after N seconds inactive)
+nc config set claude_session.crash_timeout 300
+
+# Enable/disable notifications
+nc config set claude_session.notifications true
+```
+
+### API Endpoints
+
+#### GET /api/claude-sessions
+
+List all tracked Claude Code sessions.
+
+```bash
+curl http://localhost:7669/api/claude-sessions
+```
+
+#### GET /api/claude-sessions/active
+
+Get currently active session.
+
+```bash
+curl http://localhost:7669/api/claude-sessions/active
+```
+
+#### GET /api/claude-sessions/crashed
+
+List crashed sessions awaiting recovery.
+
+```bash
+curl http://localhost:7669/api/claude-sessions/crashed
+```
+
 ## API Reference
 
 ### GET /api/sessions
