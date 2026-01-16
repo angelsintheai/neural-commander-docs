@@ -8,79 +8,122 @@ description: Get Neural Commander up and running in 5 minutes
 
 Get Neural Commander running in under 5 minutes.
 
+:::info Alpha Release
+Neural Commander v0.98.1 is currently in **private alpha**. To access the releases, [request alpha access](/alpha) first.
+:::
+
 ## Prerequisites
 
-- **Go 1.21+** (for building from source)
-- **Ollama** (for local AI models) - [Install Ollama](https://ollama.ai)
-- **Git** (for cloning the repository)
+- **Ollama** (recommended for local AI models) - [Install Ollama](https://ollama.ai)
+- **Git** (optional, for build from source)
 
 ## Installation
 
-### Option 1: Download Binary (Recommended)
+### Step 1: Download Binary
+
+Go to the [releases page](https://github.com/angelsintheai/neural-commander/releases/tag/v0.98.1) and download for your platform:
+
+| Platform | File |
+|----------|------|
+| Linux (Intel/AMD) | `neural-commander-linux-amd64` |
+| Linux (ARM) | `neural-commander-linux-arm64` |
+| macOS (Intel) | `neural-commander-darwin-amd64` |
+| macOS (M1/M2/M3) | `neural-commander-darwin-arm64` |
+| Windows | `neural-commander-windows-amd64.exe` |
+
+### Step 2: Install
+
+**Linux / macOS:**
 
 ```bash
-# Linux
-curl -L https://github.com/angelsintheai/neural-commander/releases/latest/download/neural-commander-linux -o nc
-chmod +x nc
-sudo mv nc /usr/local/bin/
+# Make executable
+chmod +x neural-commander-*
 
-# macOS
-curl -L https://github.com/angelsintheai/neural-commander/releases/latest/download/neural-commander-mac -o nc
-chmod +x nc
-sudo mv nc /usr/local/bin/
+# Move to PATH
+mv neural-commander-linux-amd64 ~/.local/bin/nc
+# OR for macOS:
+# mv neural-commander-darwin-arm64 ~/.local/bin/nc
 
-# Windows (PowerShell)
-Invoke-WebRequest -Uri "https://github.com/angelsintheai/neural-commander/releases/latest/download/neural-commander.exe" -OutFile "nc.exe"
+# Ensure ~/.local/bin is in PATH
+echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
+source ~/.bashrc
 ```
 
-### Option 2: Build from Source
+**Windows (PowerShell):**
 
-```bash
-git clone https://github.com/angelsintheai/neural-commander.git
-cd neural-commander/neural-commander-go
-go build -o nc ./cmd/nc
+```powershell
+# Create directory if needed
+mkdir $env:USERPROFILE\.local\bin -ErrorAction SilentlyContinue
+
+# Move binary
+Move-Item neural-commander-windows-amd64.exe $env:USERPROFILE\.local\bin\nc.exe
+
+# Add to PATH
+$env:PATH += ";$env:USERPROFILE\.local\bin"
 ```
 
-## Verify Installation
+### Step 3: Verify Installation
 
 ```bash
 nc version
-# Neural Commander v0.99 (Community Edition)
+# Neural Commander v0.98.1
+# Edition: Community Edition
 ```
 
 ## Start Using Neural Commander
 
-### 1. Start the API Server
+### 1. Run a Quick Audit
 
 ```bash
-nc --api
-# Server running on http://localhost:7669
+cd /path/to/your/project
+nc audit
 ```
 
-### 2. Chat with AI
+This scans your project for:
+- Documentation health
+- Git metrics
+- Code quality indicators
+- Requirements coverage
+
+### 2. Start the Daemon
 
 ```bash
-# Simple chat
+nc daemon start
+```
+
+The daemon enables:
+- Session monitoring
+- Real-time alerts
+- API server (port 7669)
+
+### 3. View Admin Console
+
+```bash
+nc admin
+```
+
+A terminal UI dashboard showing:
+- System status
+- Active sessions
+- Event stream
+
+Press `q` to exit.
+
+### 4. Check Claude Sessions
+
+If you use Claude Code:
+
+```bash
+nc claude-session list
+```
+
+Shows your Claude Code sessions with crash detection.
+
+### 5. Chat with AI (Optional)
+
+```bash
+# Requires Ollama running
 nc chat "Write a Python function to reverse a string"
-
-# Or via API
-curl -X POST http://localhost:7669/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{"prompt": "Explain async/await in JavaScript"}'
-```
-
-### 3. Scan a Project
-
-```bash
-nc audit /path/to/your/project
-# Generates project health report with recommendations
-```
-
-### 4. View Sessions
-
-```bash
-nc session list
-# Shows all your AI sessions with context
 ```
 
 ## What's Next?
@@ -92,11 +135,11 @@ nc session list
 
 ## Quick Tips
 
-- NC automatically selects the best model for your task
+- NC works with zero configuration out of the box
 - Sessions persist across restarts - pick up where you left off
 - Use `nc --help` to see all available commands
 - The daemon runs in background for real-time project monitoring
 
 ---
 
-*Need help? Check our [Troubleshooting Guide](/docs/getting-started/troubleshooting) or [open an issue](https://github.com/angelsintheai/neural-commander/issues).*
+*Need help? Check our [Troubleshooting Guide](/docs/getting-started/troubleshooting) or [submit feedback](https://github.com/angelsintheai/neural-commander/issues).*
