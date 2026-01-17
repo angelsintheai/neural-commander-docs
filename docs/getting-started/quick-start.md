@@ -76,14 +76,24 @@ nc version
 
 ```bash
 cd /path/to/your/project
+
+# Fast scan (recommended first time)
+nc audit --quick
+
+# Save report to markdown file
+nc audit --quick -o
+
+# Full scan (more thorough, takes longer)
 nc audit
 ```
 
 This scans your project for:
 - Documentation health
 - Git metrics
-- Code quality indicators
+- Code quality indicators (TODO/FIXME/HACK)
 - Requirements coverage
+
+The `-o` flag saves a markdown report with auto-generated filename like `20260117-143022-projectname-audit.md`.
 
 ### 2. Start the Daemon
 
