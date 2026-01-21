@@ -6,7 +6,7 @@ description: Common issues and solutions
 
 # Troubleshooting Guide
 
-**Version**: v0.98.1
+**Version**: v0.98.3
 
 ---
 
@@ -246,6 +246,156 @@ ls -la ~/.nc/
 sudo chown -R $USER:$USER ~/.nc/
 chmod -R 755 ~/.nc/
 ```
+
+---
+
+### 11. CLAUDE.md Alerts Not Updating
+
+**Symptoms**: NC daemon running but CLAUDE.md alerts section stays stale (old timestamps)
+
+**Version Fixed**: v0.98.3
+
+**Cause**: The `HasNCDirectives()` check was too strict - it required both `NC-ALERTS-START` markers AND a specific protocol directive that was never installed.
+
+**Check 1: Verify daemon is running with correct binary**
+```bash
+# Check daemon PID
+pgrep -f neural-commander
+
+# Verify it's using the latest binary
+ls -la ~/.local/bin/nc
+ls -la /path/to/dist/nc
+
+# If different timestamps, copy the newer one
+cp /path/to/dist/nc ~/.local/bin/nc
+```
+
+**Check 2: Verify CLAUDE.md has correct markers**
+```bash
+# Your CLAUDE.md needs these markers:
+grep "NC-ALERTS-START" CLAUDE.md
+grep "NC-ALERTS-END" CLAUDE.md
+
+# Both should return results
+```
+
+**Check 3: Look for duplicate markers**
+```bash
+# Should return exactly 1 for each
+grep -c "NC-ALERTS-START" CLAUDE.md
+grep -c "NC-ALERTS-END" CLAUDE.md
+
+# If more than 1, you have duplicate markers - edit manually to remove
+```
+
+**Fix**: Restart daemon with latest binary
+```bash
+pkill -f neural-commander
+cp /path/to/new/nc ~/.local/bin/nc
+nc daemon start
+```
+
+---
+
+### 12. Session State Inconsistency (WSL2)
+
+**Symptoms**: `nc claude-session list` shows different state than `nc claude-session show <id>`
+
+**Version Fixed**: v0.98.3
+
+**Cause**: On WSL2, file system caching can cause stale modification times. A session file might show "last modified 10 minutes ago" even though Claude Code is actively running.
+
+**Check**: Verify process is actually running
+```bash
+# Look for Claude processes
+ps aux | grep -E "claude|node.*claude"
+
+# Check if process owns the session directory
+ls -la ~/.claude/projects/
+```
+
+**How NC Fixes This (v0.98.3+)**:
+
+NC now uses **hybrid state detection**:
+1. First checks file modification time
+2. If file appears stale (>5 min), checks if Claude process is actually running
+3. If process running → marks as Active (overrides stale file time)
+4. If no process → marks as Crashed
+
+This ensures consistent state reporting across `list` and `show` commands.
+
+---
+
+### 13. Project Status Path Duplication
+
+**Symptoms**: `nc project status` shows duplicated paths like `/mnt/c/dev/projects/project/project`
+
+**Version Fixed**: v0.98.3
+
+**Cause**: Path normalization was joining an already-complete path with the project name again.
+
+**Verification**:
+```bash
+# Should show clean path without duplication
+nc project status my-project
+```
+
+**If still seeing duplication**: Ensure you're running v0.98.3+ binary:
+```bash
+nc version
+# Should show v0.98.3 or later
+```
+
+---
+
+### 14. Docs Search Pagination Not Working
+
+**Symptoms**: `nc docs search` returns all results, no way to limit or paginate
+
+**Version Fixed**: v0.98.3
+
+**Solution**: Use the new flags (v0.98.3+):
+```bash
+# Limit to 10 results
+nc docs search "api" --limit 10
+
+# Skip first 10, show next 10 (page 2)
+nc docs search "api" --limit 10 --offset 10
+```
+
+**Default Behavior**:
+- Without flags: Shows first 20 results
+- `--limit N`: Maximum N results
+- `--offset N`: Skip first N results
+
+---
+
+## WSL2-Specific Issues
+
+### File System Caching
+
+**Problem**: WSL2's file system layer can cache file metadata, causing:
+- Stale modification times on session files
+- Session state appearing "crashed" when actually active
+- File changes not immediately visible
+
+**Mitigation**: NC v0.98.3+ uses hybrid detection (file time + process check) to work around this.
+
+**Manual Workaround**:
+```bash
+# Force file system sync
+sync
+
+# Touch a file to update parent directory
+touch ~/.claude/.sync
+```
+
+### Process Detection Path Conversion
+
+**Problem**: WSL2 paths (`/mnt/c/...`) don't match Windows paths in process listings.
+
+**How NC Handles This**: Converts WSL paths to Windows-style paths when searching for processes:
+- `/mnt/c/dev/projects/foo` → `c:\dev\projects\foo`
 
 ---
 

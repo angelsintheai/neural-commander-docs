@@ -303,6 +303,25 @@ nc claude-session crashed
 #   Files: auth.go, middleware.go
 ```
 
+### Hybrid State Detection (v0.98.3+)
+
+NC uses a **hybrid approach** to determine session state, combining:
+
+1. **File modification time** - Primary indicator from `.jsonl` session files
+2. **Process detection** - Verifies if Claude Code is actually running
+
+This hybrid approach solves reliability issues, especially on WSL2 where file system caching can cause stale modification times.
+
+**How it works:**
+- If file was modified < 2 minutes ago → **Active**
+- If file was modified < 5 minutes ago → **Idle**
+- If file was modified > 5 minutes ago:
+  - Check if Claude process is running for the project
+  - If process found → **Active** (override stale file time)
+  - If no process → **Crashed**
+
+This ensures that `nc claude-session list` and `nc claude-session show` always report consistent state.
+
 ### Configuration
 
 ```bash
