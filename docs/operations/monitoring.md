@@ -299,7 +299,7 @@ logs:
 |--------|---------------|
 | CPU | 1-5% idle, 10-30% active |
 | Memory | 100-300 MB |
-| API Latency | <50ms (p99) |
+| API Latency | &lt;50ms (p99) |
 | Cache Hit Rate | >70% |
 
 ### Warning Thresholds

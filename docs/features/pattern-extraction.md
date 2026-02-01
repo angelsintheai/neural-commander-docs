@@ -1,277 +1,238 @@
 ---
 sidebar_position: 4
 title: Pattern Extraction
-description: Learn from your codebase patterns
+description: Automatic knowledge capture from Claude Code sessions and shell commands
 ---
 
 # Pattern Extraction
 
-Pattern Extraction automatically captures valuable development patterns from your work - commands you run, code you write, and problems you solve. These patterns become reusable knowledge that saves time on future projects.
-
-## The Value
-
-**Example**: You spend 30 minutes figuring out a complex Git rebase workflow. NC captures this pattern. Next time you or your team faces the same situation, the pattern is instantly available.
+Pattern Extraction automatically captures valuable development patterns from your Claude Code sessions and shell interactions. As you solve problems, NC learns and makes those patterns available for reuse across projects. This is a **Pro tier** feature for cross-project sharing.
 
 ## How It Works
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Your Development Activity                                   │
-│                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Commands   │  │   Code       │  │  Claude      │      │
-│  │   Executed   │  │   Written    │  │  Sessions    │      │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘      │
-│         │                 │                  │               │
-│         └────────────────┬┘                  │               │
-│                          │                   │               │
-│                    ┌─────┴──────────────────┴┐              │
-│                    │   Pattern Extraction    │              │
-│                    │   (Automatic)           │              │
-│                    └─────────────────────────┘              │
-│                               │                              │
-│                    ┌──────────┴──────────┐                  │
-│                    │   Pattern Library   │                  │
-│                    │   (Searchable)      │                  │
-│                    └─────────────────────┘                  │
-└─────────────────────────────────────────────────────────────┘
+Your Development Activity
+┌──────────────────────────────────────────────────────────┐
+│                                                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────────────┐  │
+│  │ Commands  │  │ Code     │  │ Claude Code Sessions │  │
+│  │ Executed  │  │ Written  │  │ (JSONL parsed)       │  │
+│  └─────┬────┘  └────┬─────┘  └──────────┬───────────┘  │
+│        └─────────────┼───────────────────┘              │
+│                      │                                   │
+│              ┌───────┴───────┐                           │
+│              │ Pattern Sync  │                           │
+│              │ Manager       │                           │
+│              │ (SHA256 dedup)│                           │
+│              └───────┬───────┘                           │
+│                      │                                   │
+│           ┌──────────┴──────────┐                       │
+│           │  Two-Tier Storage   │                       │
+│           │  Global + Per-Project│                       │
+│           └─────────────────────┘                       │
+└──────────────────────────────────────────────────────────┘
 ```
 
-## Pattern Types
+## Pattern Categories
 
-NC recognizes and captures several types of patterns:
+NC classifies patterns into 7 categories:
 
-| Type | Description | Example |
-|------|-------------|---------|
-| **Command** | Shell commands and pipelines | `git log --oneline \| grep fix` |
-| **Function** | Code implementations | Error handling patterns |
-| **Fix** | Bug fix solutions | Null pointer fix patterns |
-| **Optimization** | Performance improvements | Query optimization |
-| **Refactor** | Code restructuring | Extract method patterns |
-| **Architecture** | Design patterns | Singleton, Factory, etc. |
+| Category | Description | Example |
+|----------|-------------|---------|
+| `code_pattern` | Reusable code structures | Graceful HTTP shutdown |
+| `architecture` | System design patterns | Event-driven integration |
+| `best_practice` | Proven approaches | SQLite WAL mode for concurrency |
+| `gotcha` | Common pitfalls | WSL2 process detection quirks |
+| `solution` | Problem-specific fixes | Goroutine leak fix |
+| `workflow` | Process patterns | Pre-commit validation hook |
+| `configuration` | Config patterns | Docker health check settings |
 
-## Using Patterns
+## Quick Start
 
-### List Your Top Patterns
+### List Your Patterns
 
 ```bash
-# View your most valuable patterns
 nc patterns list
-
-# View top 10 by time saved
-nc patterns list --top 10
 ```
 
-**Example Output**:
 ```
-Top Patterns by Value
-=====================
+Patterns (showing top 20)
+═════════════════════════
 
-#  TITLE                           TYPE         MINUTES SAVED   REUSES
-1  Docker multi-stage build        command      45              12
-2  Git interactive rebase          command      35              8
-3  Error handling middleware       function     30              15
-4  Database connection pool        architecture 25              6
-5  API rate limiting               function     20              4
+  Go Graceful HTTP Shutdown                    code_pattern
+  Language: go | Used: 4 times | Success: 100%
+  Tags: go, http, graceful-shutdown
+  ──────────────────────────────────────
 
-Total patterns: 42
-Total time saved: 1,260 minutes (~21 hours)
+  Fix WSL2 Process Detection                   solution
+  Language: go | Used: 2 times | Success: 100%
+  Tags: wsl2, process, cross-platform
 ```
 
 ### Search Patterns
 
 ```bash
-# Search by keyword
-nc patterns search "git"
-
-# Search by tag
-nc patterns search --tag docker
-
-# Search by type
-nc patterns search --type fix
+nc patterns search "error handling"
 ```
 
-### View Pattern Details
+### Apply a Pattern
+
+Mark a pattern as used (tracks effectiveness):
 
 ```bash
-nc patterns show <pattern-id>
+nc patterns apply a1b2c3d4
 ```
 
-**Example Output**:
+### View Statistics
+
+```bash
+nc patterns stats
 ```
-Pattern: Git Interactive Rebase
-===============================
 
-ID:          a1b2c3d4
-Type:        command
-Created:     2025-12-01
-Last Used:   2025-12-05
-Reuse Count: 8
-
-Command:
-  git rebase -i HEAD~5
-
-Description:
-  Interactive rebase to clean up last 5 commits before pushing.
-  Useful for squashing, reordering, and editing commit messages.
-
-Tags: git, rebase, cleanup
-
-Value:
-  Estimated Minutes Saved: 35
-  Complexity Score: 3
-  Success Rate: 100%
 ```
+Pattern Statistics
+══════════════════
+
+Total Patterns: 42
+
+By Category:
+  code_pattern:    15 (35.7%)
+  solution:        10 (23.8%)
+  best_practice:    8 (19.0%)
+
+By Language:
+  go:              22 (52.4%)
+  python:           8 (19.0%)
+  typescript:        6 (14.3%)
+
+Average Success Rate: 94.2%
+```
+
+## CLI Commands
+
+| Command | Description |
+|---------|-------------|
+| `nc patterns list` | Display patterns (top 20 by default) |
+| `nc patterns list --global` | Show all patterns |
+| `nc patterns list --category <cat>` | Filter by category |
+| `nc patterns list --language <lang>` | Filter by language |
+| `nc patterns search <query>` | Full-text search |
+| `nc patterns apply <id>` | Mark pattern as used |
+| `nc patterns sync` | Export to global store (Pro tier) |
+| `nc patterns stats` | View aggregated statistics |
+| `nc patterns remove <id>` | Delete a pattern |
+
+Pattern IDs support partial matching (first 4+ characters).
 
 ## Automatic Capture
 
-NC automatically captures patterns when:
+When the NC daemon is running, patterns are captured automatically from:
 
-1. **Commands are executed** via the daemon
-2. **Claude Code sessions** generate valuable solutions
-3. **High-value code** is written in monitored projects
+1. **Claude Code sessions** - The Harvester parses JSONL session files, extracting prompts and outcomes (file changes, git commits, tool results)
+2. **Shell commands** - Command execution patterns with success/failure tracking
+3. **Code changes** - Significant code patterns during file monitoring
 
-### What Makes a Pattern "High Value"?
+### Value Estimation
 
-NC estimates time savings based on:
+Each pattern receives an estimated time-savings value:
 
-| Factor | Impact |
-|--------|--------|
-| Pattern type | Fixes = 30 min, Optimizations = 20 min |
-| Complexity | +5 min per control structure |
-| Pipeline usage | +5 min for command chains |
-| Reuse frequency | Multiplied by reuse count |
+| Pattern Type | Estimated Minutes Saved |
+|-------------|------------------------|
+| Fix | 30 min |
+| Optimization | 20 min |
+| Refactor / Architecture | 15 min |
+| Function | 10 min |
+| Command | 5 min (10 for pipelines) |
 
-Patterns saving 30+ minutes are flagged as "high value" and trigger notifications.
+Patterns saving 30+ minutes trigger high-value notifications through [Active Alerts](/docs/features/active-alerts).
 
-## Manual Capture
+## Cross-Project Sharing (Pro)
 
-### Capture a Command Pattern
+NC scores patterns against your current project context using multiple factors:
 
-```bash
-# Capture a command you just ran
-nc patterns capture --command "git bisect run ./test.sh" \
-  --title "Git bisect automation" \
-  --description "Find bug-introducing commit automatically"
-```
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| Language match | 0.40 | Primary language match |
+| Framework match | 0.30 | Framework match |
+| Tag overlap | 0.20 | Shared tags |
+| Success rate | 0.10 | Historical reliability |
+| Recency | 0.10 | Recently used patterns |
 
-### Capture from Claude Session
-
-```bash
-# Capture patterns from a specific session
-nc patterns capture --session <session-id>
-
-# Capture from current/latest session
-nc patterns capture --session latest
-```
-
-## Pattern Sharing
-
-### Export Patterns
+Only patterns scoring above 0.30 are recommended. Top 10 per project.
 
 ```bash
-# Export to file
-nc patterns export patterns.json
+# Sync project patterns to global store
+nc patterns sync
 
-# Export specific patterns
-nc patterns export --tag docker docker-patterns.json
+# Other projects automatically get relevant recommendations
 ```
 
-### Import Patterns
+## Storage
 
-```bash
-# Import from file
-nc patterns import team-patterns.json
-
-# Import with merge (don't overwrite existing)
-nc patterns import team-patterns.json --merge
-```
-
-## High-Value Notifications
-
-When a high-value pattern is discovered, you'll see:
+Patterns use a two-tier storage layout:
 
 ```
-[NC] High-value pattern discovered!
-  Title: Database connection retry logic
-  Saves: ~45 minutes
-  Type: fix
-
-  View: nc patterns show f7e8d9c0
+~/.neural-commander/
+└── patterns/
+    ├── global/
+    │   └── patterns.json    # Cross-project patterns
+    └── projects/
+        ├── project-a/
+        │   └── learnings/   # Project-specific
+        └── project-b/
+            └── learnings/
 ```
 
-## Configuration
-
-### View Current Settings
-
-```bash
-nc config get pattern_extraction
-```
-
-### Adjust Settings
-
-```bash
-# Set minimum value threshold
-nc config set pattern_threshold 30
-
-# Enable/disable auto-capture
-nc config set pattern_auto_capture true
-
-# Set share threshold (auto-share after N reuses)
-nc config set pattern_share_threshold 5
-```
+Deduplication uses SHA256 hashing of content. Duplicate patterns increment usage count instead of creating copies.
 
 ## API Access
 
-Patterns are available via the NC API:
+Patterns are available via the NC REST API on port 7669:
 
 ```bash
-# List patterns
+# List all patterns
 curl http://localhost:7669/api/patterns
 
-# Get specific pattern
-curl http://localhost:7669/api/patterns/<id>
+# Filter by category
+curl "http://localhost:7669/api/patterns?category=code_pattern"
 
-# Search patterns
-curl "http://localhost:7669/api/patterns?q=docker&type=command"
+# Search by keyword
+curl "http://localhost:7669/api/patterns?q=error+handling"
+
+# Add a pattern
+curl -X POST http://localhost:7669/api/patterns \
+  -H "Content-Type: application/json" \
+  -d '{"title":"My Pattern","content":"code here","category":"code_pattern"}'
+
+# Track usage
+curl -X POST http://localhost:7669/api/patterns/a1b2c3d4/apply
+
+# Get statistics
+curl http://localhost:7669/api/patterns/stats
+
+# Get relevant patterns for a project
+curl -X POST http://localhost:7669/api/patterns/relevant \
+  -d '{"language":"go","tags":["api","daemon"]}'
 ```
 
-## Best Practices
+## Troubleshooting
 
-### 1. Keep Daemon Running
+### No Patterns Showing
 
-The daemon captures patterns automatically. Run it during development:
+1. Ensure the daemon is running: `nc daemon status`
+2. Check with `--global` flag: `nc patterns list --global`
+3. Work in a Claude Code session with the daemon running to start capturing
 
-```bash
-nc daemon start
-```
+### Sync Fails with Tier Error
 
-### 2. Tag Your Patterns
+Cross-project sync requires Pro tier. Use `nc patterns list` for local patterns on Free tier.
 
-Good tags make patterns findable:
+### Pattern Not Being Captured
 
-```bash
-nc patterns tag <id> "kubernetes" "deployment" "rollback"
-```
-
-### 3. Share Team Patterns
-
-Export high-value patterns for your team:
-
-```bash
-# Weekly export of top patterns
-nc patterns export --since "1 week ago" --min-value 30 team-week.json
-```
-
-### 4. Review Captured Patterns
-
-Periodically review what's being captured:
-
-```bash
-# Patterns from last week
-nc patterns list --since "1 week ago"
-```
+1. Verify harvester access: `ls ~/.claude/projects/`
+2. Check harvest window (default: last 7 days)
+3. Prompts shorter than 10 or longer than 50,000 characters are skipped
 
 ---
 
-*See [Session Intelligence](/docs/features/session-intelligence) for how patterns integrate with session tracking.*
+*Pattern Extraction integrates with [Session Intelligence](/docs/features/session-intelligence) for session data and [Active Alerts](/docs/features/active-alerts) for high-value pattern notifications.*

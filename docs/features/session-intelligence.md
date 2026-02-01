@@ -112,49 +112,88 @@ The recovered session includes:
 - Any uncommitted decisions or todos
 - Files that were being modified
 
-## Context Injection
+## Checkpointing
 
-NC can inject session context into your AI prompts:
+NC creates a checkpoint every 30 seconds for each active session. Checkpoints capture your progress with minimal overhead, ensuring at most 30 seconds of lost work in a crash.
 
-### Manual Injection
+### What's Captured
+
+Each checkpoint records:
+- Your last 5 user prompts
+- Current todo list (pending and in-progress items)
+- Files modified during the session
+- Message count and estimated token usage
+
+Checkpoints use delta detection (SHA256 hash) - new checkpoints are only created when session state actually changes.
+
+### Viewing Checkpoints
 
 ```bash
-# Get context summary
-nc context summary
+# List all sessions with checkpoint counts
+nc checkpoint list
 
-# Include in prompt
-nc chat "Continue from where we left off" --with-context
+# Show latest checkpoint for a session
+nc checkpoint show bd5adee7
+
+# View checkpoint statistics
+nc checkpoint stats
 ```
 
-### Automatic Context (API)
+**Example output**:
+```
+=== Checkpoint: neural-commander ===
+Time: 2025-10-10 14:30:30
+Messages: 247 (~123,500 tokens)
+Checkpoint #42
+
+Last Prompts:
+  1. "Write the session intelligence documentation"
+  2. "Fix the CLAUDE.md corruption bug"
+  3. "Run the tests"
+
+Active Todos:
+  [in_progress] Writing Session Intelligence docs
+  [pending] Writing Resource Governor docs
+
+Files Modified:
+  docs/features/SESSION-INTELLIGENCE-USER-GUIDE.md
+  internal/sessions/claude_code_watcher.go
+```
+
+## .nc-session Files
+
+A `.nc-session` file in your project root enables automatic session resume without remembering session IDs.
 
 ```bash
-curl -X POST http://localhost:7669/api/chat \
-  -H "Content-Type: application/json" \
-  -d '{
-    "prompt": "What were we working on?",
-    "session_id": "bd5adee7"
-  }'
+# From project root - auto-detects session
+cd /path/to/project
+nc session resume
+
+# From any subdirectory - walks up to find .nc-session
+cd /path/to/project/src/deep/folder
+nc session resume
+```
+
+`.nc-session` files are designed to be committed to git, enabling persistent session tracking across terminal restarts and branch switches.
+
+## Session Discovery
+
+If the daemon was restarted or sessions were created while the daemon was down:
+
+```bash
+# Find untracked sessions
+nc claude-session discover
+
+# Show all sessions including old ones
+nc claude-session discover --all
+
+# Manually add a session to monitoring
+nc claude-session track <session-id>
 ```
 
 ## Session Data
 
-Sessions are stored in `~/.neural-commander/sessions/` as JSON files:
-
-```json
-{
-  "id": "bd5adee7-e606-4cc7-ba18-266dace8aad6",
-  "project": "neural-commander",
-  "created_at": "2025-10-10T14:33:08Z",
-  "updated_at": "2025-10-10T16:45:22Z",
-  "messages": [...],
-  "context": {
-    "files_touched": ["main.go", "api.go"],
-    "decisions": ["Use REST instead of GraphQL"],
-    "todos": ["Add error handling"]
-  }
-}
-```
+Sessions are tracked from Claude Code's JSONL files in `~/.claude/projects/`. NC reads these files (never writes to them) and stores extracted state in checkpoints at `~/.neural-commander/checkpoints/`.
 
 ## Best Practices
 

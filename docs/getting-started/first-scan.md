@@ -17,7 +17,7 @@ cd /path/to/your/project
 nc audit --quick
 ```
 
-This runs a fast scan (targeting <30s) that skips heavy directories like `node_modules`, `.git`, and `vendor`.
+This runs a fast scan (targeting &lt;30s) that skips heavy directories like `node_modules`, `.git`, and `vendor`.
 
 ### Sample Output
 

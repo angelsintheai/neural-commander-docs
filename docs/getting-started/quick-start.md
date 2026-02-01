@@ -9,7 +9,7 @@ description: Get Neural Commander up and running in 5 minutes
 Get Neural Commander running in under 5 minutes.
 
 :::info Alpha Release
-Neural Commander v0.98.1 is currently in **private alpha**. To access the releases, [request alpha access](/alpha) first.
+Neural Commander v0.98.1 is currently in **private alpha**. To access the releases, [request alpha access](https://neuralcommander.ai) first.
 :::
 
 ## Prerequisites

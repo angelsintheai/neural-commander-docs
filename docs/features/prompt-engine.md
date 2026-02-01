@@ -1,346 +1,260 @@
 ---
 sidebar_position: 8
 title: Prompt Engine
-description: Intelligent prompt enhancement
+description: Automatic prompt harvesting, quality scoring, and searchable prompt library
 ---
 
 # Prompt Engine
 
-The Prompt Engine enhances your prompts for better AI responses. It analyzes prompts, predicts effectiveness, suggests improvements, and recommends the best model for each task.
+The Prompt Engine (Universal Prompt Harvester) automatically collects prompts from your Claude Code sessions, scores them for quality using a hybrid algorithmic + human feedback system, and builds a searchable prompt library. Over time, your best prompts surface through combined algorithmic scoring and your own ratings.
 
 ## How It Works
 
 ```
-User Prompt
-     │
-     ▼
-┌────────────────────────────────────────────┐
-│         Prompt Engine Processing           │
-│  ┌──────────────────────────────────────┐ │
-│  │ 1. Generate embedding                 │ │
-│  │ 2. Search similar prompts             │ │
-│  │ 3. Predict effectiveness              │ │
-│  │ 4. Suggest improvements               │ │
-│  │ 5. Recommend model                    │ │
-│  └──────────────────────────────────────┘ │
-└────────────────────────────────────────────┘
-     │
-     ▼
-Enhanced Prompt + Recommendations
-     │
-     ▼
-Send to LLM (with improvements applied)
-     │
-     ▼
-Feedback Loop → Improve Future Predictions
+Claude Code Sessions (~/.claude/projects/)
+    │
+    ├── project-a/sessions/*.jsonl
+    ├── project-b/sessions/*.jsonl
+    └── ...
+    │
+    ▼
+┌──────────────────────────────────────────┐
+│            Prompt Engine                  │
+│                                          │
+│  ┌────────┐  ┌────────┐  ┌───────────┐  │
+│  │Harvester│  │Scorer  │  │Feedback   │  │
+│  │(JSONL)  │  │(hybrid)│  │Manager    │  │
+│  └───┬─────┘  └───┬────┘  └────┬──────┘  │
+│      │             │            │         │
+│  ┌───┴─────────────┴────────────┴──────┐  │
+│  │  Store (SQLite + FTS4)              │  │
+│  │  ~/.neural-commander/prompts.db     │  │
+│  └─────────────────────────────────────┘  │
+│      │                                    │
+│  ┌───┴──────────┐                        │
+│  │  Embeddings  │ (Pro tier, Ollama)     │
+│  │  Manager     │                        │
+│  └──────────────┘                        │
+└──────────────────────────────────────────┘
+    │                    │
+┌───┴───┐           ┌───┴────┐
+│  CLI  │           │REST API│
+│(nc    │           │(:7669) │
+│prompts)│          └────────┘
+└────────┘
 ```
 
-## Features
+The harvester reads JSONL session files, extracts user prompts, links them to outcomes (file changes, commits, tool results), scores each prompt, and stores everything in a local SQLite database with full-text search.
 
-### Effectiveness Prediction
+## Quick Start
 
-Before sending a prompt, the engine predicts how well it will perform:
+### 1. Harvest Prompts
 
 ```bash
-nc prompt analyze "Write a function to validate email addresses"
+nc prompts harvest
 ```
 
-**Output**:
 ```
-Prompt Analysis
-===============
+Harvesting prompts from Claude Code sessions...
+  Scanned: 47 session files
+  New prompts: 23
+  Duplicates skipped: 156
+  Outcomes linked: 41
 
-Predicted Effectiveness: 85%
-Suggested Model: gpt-4
-
-Improvements:
-  1. Specify the programming language
-  2. Mention edge cases to handle (e.g., international domains)
-  3. Indicate whether to use regex or a library
-
-Similar Successful Prompts:
-  - "Write a TypeScript email validator with RFC 5322 compliance" (92% effective)
-  - "Create Python email validation using email-validator library" (89% effective)
+Harvest complete in 3.2s
 ```
 
-### Model Recommendation
-
-The engine suggests the best model based on:
-
-- Task complexity
-- Similar prompt history
-- Response quality data
+### 2. Browse Your Library
 
 ```bash
-nc prompt recommend "Explain the theory of relativity to a 5-year-old"
+nc prompts list
 ```
 
-**Output**:
 ```
-Recommended Model: claude-3-opus
-Reasoning: Creative explanations benefit from larger context and nuanced output
+Prompt Library (showing 20 of 179)
+
+  a1b2c3d4  "Implement graceful shutdown with context..."
+            Project: neural-commander | Category: code
+            Score: 0.82 | Tokens: 156 | 2026-01-30
+
+  e5f6g7h8  "Fix the goroutine leak in the daemon..."
+            Project: neural-commander | Category: debug
+            Score: 0.76 | Tokens: 89 | 2026-01-29
+  ...
 ```
 
-### Improvement Suggestions
-
-Get specific suggestions to improve your prompts:
+### 3. Search
 
 ```bash
-nc prompt improve "fix the bug"
+nc prompts search "error handling"
 ```
 
-**Output**:
-```
-Original: "fix the bug"
-
-Suggestions:
-  1. Specify which bug (file location, error message)
-  2. Describe expected vs actual behavior
-  3. Include relevant code context
-  4. Mention what you've already tried
-
-Improved Example:
-  "Fix the NullPointerException in UserService.java line 42.
-   Expected: User object returned when found in database.
-   Actual: Null returned even when user exists.
-   Already tried: Adding null check before database call."
-```
-
-### Historical Search
-
-Find similar prompts that worked well:
+### 4. Rate a Prompt
 
 ```bash
-nc prompt search "authentication"
+nc prompts rate a1b2c3d4 --score 5
 ```
 
-**Output**:
-```
-Similar Prompts (by effectiveness):
+## CLI Commands
 
-1. "Implement JWT authentication with refresh tokens" - 94%
-   Model: claude-3-sonnet | Response time: 2.1s
+| Command | Description |
+|---------|-------------|
+| `nc prompts harvest` | Collect prompts from Claude Code sessions |
+| `nc prompts list` | List harvested prompts (filterable) |
+| `nc prompts search <query>` | Keyword search (FTS4 with Porter stemming) |
+| `nc prompts search <query> --semantic` | Semantic search via embeddings (Pro) |
+| `nc prompts show <id>` | View full prompt details and outcomes |
+| `nc prompts rate <id> --score N` | Rate a prompt 1-5 stars |
+| `nc prompts stats` | Library statistics by category and project |
+| `nc prompts top` | Highest-scored prompts |
+| `nc prompts embed` | Generate embeddings for semantic search (Pro) |
+| `nc prompts copy <id>` | Copy prompt to clipboard |
+| `nc prompts browse` | Interactive prompt browser |
 
-2. "Add OAuth2 login with Google provider" - 91%
-   Model: gpt-4 | Response time: 3.4s
+Prompt IDs support partial matching (first 4+ characters).
 
-3. "Create session-based auth with Redis store" - 88%
-   Model: claude-3-haiku | Response time: 1.2s
-```
+## Quality Scoring
 
-## Using the Prompt Engine
+Each prompt receives a composite score from 0.0 to 1.0, combining algorithmic analysis with your ratings.
 
-### With NC Chat
+### Algorithmic Components
 
-The Prompt Engine integrates automatically with `nc chat`:
+| Component | Weight | What It Measures |
+|-----------|--------|-----------------|
+| Success Rate | 30% | Did tool calls succeed after this prompt? |
+| Reuse Potential | 20% | Applicable across projects? |
+| Clarity | 15% | Well-structured, clear language? |
+| Specificity | 15% | Mentions files, functions, errors concretely? |
+| Outcome Quality | 20% | Produced file changes or commits? |
+
+**Formula**: `AlgoScore = 0.30*Success + 0.20*Reuse + 0.15*Clarity + 0.15*Specificity + 0.20*Outcome`
+
+### Human Feedback Multiplier
+
+Your ratings adjust the composite score:
+
+| Stars | Multiplier |
+|-------|------------|
+| 1 | 0.50x |
+| 2 | 0.75x |
+| 3 | 1.00x (neutral) |
+| 4 | 1.50x |
+| 5 | 2.00x |
+
+**Composite**: `MIN(1.0, AlgoScore * HumanMultiplier)`
+
+Ratings are time-weighted: recent feedback counts more (2.0x within 24h, 1.5x within 7 days, 1.0x older).
+
+## Prompt Categories
+
+Prompts are auto-categorized during harvest:
+
+| Category | Detection Keywords |
+|----------|-------------------|
+| `code` | create, implement, write, function, class |
+| `debug` | fix, error, bug, debug, crash |
+| `design` | design, architect, structure, pattern |
+| `docs` | document, readme, comment, explain |
+| `refactor` | refactor, clean, improve, simplify |
+| `test` | test, spec, assert, coverage |
+| `config` | config, setup, install, deploy |
+| `other` | Default fallback |
+
+## Prompt Outcomes
+
+The harvester tracks what happened after each prompt within a 5-minute window:
+
+| Outcome | Impact |
+|---------|--------|
+| `file_change` | Positive (code was generated) |
+| `git_commit` | Positive (work was committed) |
+| `tool_success` | Positive (tool worked) |
+| `tool_failure` | Negative (tool errored) |
+| `follow_up` | Neutral (session continued) |
+| `session_end` | Neutral (session completed) |
+
+## Semantic Search (Pro)
+
+With Ollama running locally, generate embeddings for AI-powered semantic search:
 
 ```bash
-# Engine enhances your prompt automatically
-nc chat "Create a REST API endpoint"
+# Install model
+ollama pull nomic-embed-text
 
-# Skip enhancement
-nc chat --raw "Create a REST API endpoint"
+# Generate embeddings
+nc prompts embed
+
+# Search by meaning, not just keywords
+nc prompts search "how to safely stop a background process" --semantic
 ```
 
-### With Context
+Semantic search uses 384-dimensional vectors and cosine similarity to find conceptually related prompts even without matching keywords.
 
-Provide context for better recommendations:
+## API Access
 
-```bash
-nc chat "Add error handling" --context language=go --context project=api-server
-```
-
-### Feedback Loop
-
-After receiving responses, NC can record effectiveness:
+The Prompt Engine REST API runs on port 7669:
 
 ```bash
-# Mark response as helpful
-nc feedback good
+# List prompts
+curl "http://localhost:7669/api/prompts?limit=20"
 
-# Mark response as unhelpful
-nc feedback poor --reason "Code didn't compile"
-```
+# Search
+curl "http://localhost:7669/api/prompts/search?q=error+handling"
 
-This feedback improves future predictions.
+# Get prompt details
+curl "http://localhost:7669/api/prompts/a1b2c3d4"
 
-## API Reference
-
-### POST /api/prompt/analyze
-
-Analyze a prompt without sending it.
-
-```bash
-curl -X POST http://localhost:7669/api/prompt/analyze \
+# Rate a prompt
+curl -X POST "http://localhost:7669/api/prompts/a1b2c3d4/rate" \
   -H "Content-Type: application/json" \
-  -d '{
-    "text": "Write a hello world function",
-    "context": {
-      "language": "python"
-    }
-  }'
+  -d '{"score": 5, "source": "api"}'
+
+# Trigger harvest
+curl -X POST "http://localhost:7669/api/prompts/harvest"
+
+# Statistics
+curl "http://localhost:7669/api/prompts/stats"
+
+# Top prompts
+curl "http://localhost:7669/api/prompts/top?limit=10"
 ```
 
-**Response**:
-```json
-{
-  "id": "prompt-abc123",
-  "predictedEffectiveness": 0.75,
-  "suggestedModel": "claude-3-haiku",
-  "improvements": [
-    "Specify if you want tests included",
-    "Mention any specific style preferences"
-  ],
-  "similarPrompts": [
-    {
-      "text": "Create a Python hello world with docstring",
-      "effectiveness": 0.92,
-      "model": "claude-3-haiku"
-    }
-  ]
-}
-```
+## Background Daemon
 
-### POST /api/prompt/feedback
+With the daemon running (`nc daemon start`), harvesting runs automatically every 5 minutes and scoring every 15 minutes. No manual harvesting needed.
 
-Submit feedback for training.
+## Tier Features
 
-```bash
-curl -X POST http://localhost:7669/api/prompt/feedback \
-  -H "Content-Type: application/json" \
-  -d '{
-    "promptId": "prompt-abc123",
-    "effectiveness": 0.85,
-    "modelUsed": "gpt-4",
-    "responseQuality": "good",
-    "userSatisfaction": true
-  }'
-```
-
-### GET /api/prompt/similar
-
-Find similar historical prompts.
-
-```bash
-curl "http://localhost:7669/api/prompt/similar?q=authentication&limit=5"
-```
-
-## Configuration
-
-### Enable/Disable
-
-```bash
-# Enable prompt enhancement (default)
-nc config set prompt_engine.enabled true
-
-# Disable
-nc config set prompt_engine.enabled false
-```
-
-### Sensitivity
-
-Control how aggressive improvements are:
-
-```bash
-# Conservative (fewer suggestions)
-nc config set prompt_engine.sensitivity low
-
-# Balanced (default)
-nc config set prompt_engine.sensitivity medium
-
-# Aggressive (more suggestions)
-nc config set prompt_engine.sensitivity high
-```
-
-### Model Preferences
-
-Set default model preferences:
-
-```bash
-# Prefer speed
-nc config set prompt_engine.preference speed
-
-# Prefer quality
-nc config set prompt_engine.preference quality
-
-# Balance
-nc config set prompt_engine.preference balanced
-```
-
-## Best Practices
-
-### 1. Include Context
-
-More context leads to better recommendations:
-
-```bash
-# Weak
-nc chat "fix the error"
-
-# Strong
-nc chat "fix the error" --context file=server.go --context error="nil pointer"
-```
-
-### 2. Use Feedback
-
-Training the engine improves accuracy:
-
-```bash
-# After each interaction
-nc feedback good  # or poor
-```
-
-### 3. Review Improvements
-
-Don't blindly accept suggestions - review them:
-
-```bash
-# Show suggestions but don't auto-apply
-nc prompt analyze "my prompt" --no-auto-apply
-```
-
-### 4. Check History
-
-Before crafting a prompt, check what worked before:
-
-```bash
-nc prompt search "similar task"
-```
+| Feature | Community | Pro |
+|---------|-----------|-----|
+| Harvest prompts | Yes | Yes |
+| Keyword search (FTS4) | Yes | Yes |
+| List, show, rate, browse | Yes | Yes |
+| Statistics and top prompts | Yes | Yes |
+| **Semantic search** | No | Yes |
+| **Generate embeddings** | No | Yes |
+| **Cross-project patterns** | No | Yes |
 
 ## Troubleshooting
 
-### Low Effectiveness Predictions
+### "No prompts found"
 
-If predictions are consistently low:
+1. Verify sessions exist: `ls ~/.claude/projects/`
+2. Run harvest: `nc prompts harvest`
+3. Prompts shorter than 10 or longer than 50,000 chars are filtered
 
-1. Add more context to your prompts
-2. Check if the Prompt Engine has sufficient training data
-3. Try `nc prompt improve` for specific suggestions
+### Low Scores on Good Prompts
 
-### Slow Response
+1. Check outcomes: `nc prompts show <id>`
+2. The 5-minute correlation window may miss delayed results
+3. Rate manually: `nc prompts rate <id> --score 5`
 
-The Prompt Engine adds latency for analysis:
+### Semantic Search Not Working
 
-```bash
-# Skip analysis for simple prompts
-nc chat --raw "hello"
-
-# Check engine status
-nc status --prompt-engine
-```
-
-### Bad Recommendations
-
-If model recommendations seem wrong:
-
-```bash
-# Override the recommendation
-nc chat "complex task" --model gpt-4
-
-# Submit feedback
-nc feedback poor --reason "Wrong model recommended"
-```
+1. Verify Ollama: `curl http://localhost:11434/api/tags`
+2. Pull model: `ollama pull nomic-embed-text`
+3. Generate embeddings: `nc prompts embed`
 
 ---
 
-*See [Learning System](/docs/features/learning-system) for how prompt effectiveness feeds into organizational learning.*
+*The Prompt Engine integrates with [Pattern Extraction](/docs/features/pattern-extraction) for pattern discovery from outcomes and [Session Intelligence](/docs/features/session-intelligence) for session data.*

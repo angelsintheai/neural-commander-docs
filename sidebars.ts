@@ -28,6 +28,8 @@ const sidebars: SidebarsConfig = {
         'features/resource-governor',
         'features/api-server',
         'features/prompt-engine',
+        'features/global-learnings',
+        'features/active-alerts',
       ],
     },
     {

@@ -165,9 +165,8 @@ Circuit breakers prevent cascading failures:
 
 ### Thermal Throttle Triggers
 
-- CPU temperature > 85°C
-- Sustained CPU > 90%
-- System load average > 0.9
+- GPU temperature > 83°C
+- System CPU available < 20% with sustained load
 
 **What Happens**:
 - CPU limit reduced to 50%
@@ -177,8 +176,8 @@ Circuit breakers prevent cascading failures:
 
 ### Emergency Mode Triggers
 
-- Memory usage > 95%
-- Available RAM < 500MB
+- CPU available < 20%
+- Available RAM < 4GB (reserved for OS)
 - Critical system resource exhaustion
 
 **What Happens**:
@@ -186,6 +185,77 @@ Circuit breakers prevent cascading failures:
 - Aggressive garbage collection
 - Only essential tasks run
 - Auto-releases after 60 seconds
+
+## Operating Modes
+
+NC adapts resource usage based on your current workload:
+
+```bash
+# Light background work
+nc resources mode background
+
+# Normal interactive use (default)
+nc resources mode interactive
+
+# Heavy batch operations
+nc resources mode intensive
+```
+
+| Mode | CPU Limit | RAM Limit | GPU Limit | Use Case |
+|------|-----------|-----------|-----------|----------|
+| Background | 25% | 10% of total | 30% | Daemon monitoring |
+| Interactive | 50% | 25% of total | 60% | Normal use (default) |
+| Intensive | 80% | 75% of total | 90% | Batch processing |
+
+Even in intensive mode, safety reserves remain: 2 CPU cores and 4GB RAM always reserved for the OS.
+
+## GPU Monitoring
+
+NC auto-detects and monitors GPUs:
+
+| Vendor | Metrics | Support |
+|--------|---------|---------|
+| **NVIDIA** | Utilization, memory, temp, power, fan | Full (via nvidia-smi) |
+| **AMD** | Temp, utilization, memory | Basic (via rocm-smi) |
+| **Intel** | Model, memory | Minimal |
+
+```bash
+nc resources gpu
+```
+
+When GPU temperature exceeds 83°C, thermal throttling activates automatically.
+
+No GPU? No problem - GPU monitoring is optional. All other safety features work without it.
+
+## Platform Safety
+
+### Windows
+
+NC adds extra protection on Windows:
+- **Process Priority**: Set to BELOW_NORMAL so your apps stay responsive
+- **Job Objects**: OS-level containment kills NC if it exceeds memory limits
+- **CPU Affinity**: Restricts NC to specific CPU cores
+- **Desktop Monitor**: Checks if Windows desktop remains responsive
+
+### WSL2
+
+When running on WSL2 with `/mnt/c/` paths, file I/O is 5-10x slower. NC detects this and suggests alternatives.
+
+### Linux / macOS
+
+Standard GOMAXPROCS limiting (75% of cores, minimum 2).
+
+## Session Resource Tracking
+
+NC tracks resource usage per Claude Code session:
+
+```bash
+nc resources sessions
+```
+
+Tracked metrics: tokens used, API calls, memory usage, files read/written, estimated cost.
+
+Default limits per session: 500K tokens, $1.00 estimated cost, 24-hour duration, 1,000 API calls.
 
 ## Configuration
 
@@ -328,4 +398,4 @@ grep governor ~/.neural-commander/daemon.log
 
 ---
 
-*See [Performance Tuning](/docs/operations/performance-tuning) for advanced resource optimization.*
+*The Resource Governor integrates with [Active Alerts](/docs/features/active-alerts) for resource warnings and [Admin Console](/docs/features/admin-console) for real-time resource display.*
