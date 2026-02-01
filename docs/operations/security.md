@@ -6,7 +6,7 @@ description: Neural Commander Security Model
 
 # Security Model
 
-**Version**: v0.98.1
+**Version**: v0.99.0-beta
 
 ---
 
@@ -206,7 +206,7 @@ Enterprise tier includes:
 
 ## Security Roadmap
 
-### v0.99 (Planned)
+### v0.99 (Current)
 
 - [ ] Plugin signature verification
 - [ ] Encrypted local storage option

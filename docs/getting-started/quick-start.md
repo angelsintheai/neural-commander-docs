@@ -8,8 +8,8 @@ description: Get Neural Commander up and running in 5 minutes
 
 Get Neural Commander running in under 5 minutes.
 
-:::info Alpha Release
-Neural Commander v0.98.1 is currently in **private alpha**. To access the releases, [request alpha access](https://neuralcommander.ai) first.
+:::info Beta Release
+Neural Commander v0.99.0 is currently in **public beta**. Download from the [releases page](https://github.com/angelsintheai/neural-commander/releases/latest) or visit [neuralcommander.ai](https://neuralcommander.ai).
 :::
 
 ## Prerequisites
@@ -21,7 +21,7 @@ Neural Commander v0.98.1 is currently in **private alpha**. To access the releas
 
 ### Step 1: Download Binary
 
-Go to the [releases page](https://github.com/angelsintheai/neural-commander/releases/tag/v0.98.1) and download for your platform:
+Go to the [releases page](https://github.com/angelsintheai/neural-commander/releases/latest) and download for your platform:
 
 | Platform | File |
 |----------|------|
@@ -66,7 +66,7 @@ $env:PATH += ";$env:USERPROFILE\.local\bin"
 
 ```bash
 nc version
-# Neural Commander v0.98.1
+# Neural Commander v0.99.0-beta
 # Edition: Community Edition
 ```
 

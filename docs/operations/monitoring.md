@@ -6,7 +6,7 @@ description: Monitoring Neural Commander
 
 # Monitoring Guide
 
-**Version**: v0.98.1
+**Version**: v0.99.0-beta
 
 ---
 
@@ -26,7 +26,7 @@ Neural Commander provides built-in monitoring through:
 
 ```bash
 curl http://localhost:7669/health
-# Returns: {"status":"ok","version":"v0.98.1"}
+# Returns: {"status":"ok","version":"v0.99.0-beta"}
 ```
 
 ### Detailed Health

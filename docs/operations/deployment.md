@@ -6,7 +6,7 @@ description: Deploying Neural Commander
 
 # Production Deployment Guide
 
-**Version**: v0.98.1
+**Version**: v0.99.0-beta
 
 ---
 
