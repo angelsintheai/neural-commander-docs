@@ -93,17 +93,17 @@ ignore:
 Most config options can be overridden via CLI:
 
 ```bash
-# Custom port
-nc --api --port 8080
+# Start unified daemon (REST API on 7669, MCP on 7671)
+nc daemon
 
-# Verbose output
-nc --api -v
+# Daemon without REST API (MCP only)
+nc daemon --no-api
 
-# Specific model
+# Suppress resource governor messages
+nc -q daemon
+
+# Specific model for chat
 nc chat "question" --model codellama:13b
-
-# Background mode
-nc daemon start --background
 ```
 
 ## Configuration Precedence

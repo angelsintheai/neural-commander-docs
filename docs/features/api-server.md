@@ -10,15 +10,21 @@ Neural Commander includes a built-in REST API server for integration with extern
 
 ## Quick Start
 
-```bash
-# Start on default port (7669)
-nc --api
+:::info Version 0.99 Update
+As of v0.99, the REST API server is integrated into `nc daemon`. The daemon now starts both:
+- **REST API** on port **7669** - For analytics, webhooks, sessions, chat
+- **MCP Server** on port **7671** - For Claude Code integration
+:::
 
-# Start on custom port
-nc --api --port 8080
+```bash
+# Start unified daemon (recommended)
+nc daemon
+
+# To disable REST API and only run MCP server:
+nc daemon --no-api
 ```
 
-The server runs on `http://localhost:7669` by default.
+The REST API runs on `http://localhost:7669` by default.
 
 ## API Endpoints
 
