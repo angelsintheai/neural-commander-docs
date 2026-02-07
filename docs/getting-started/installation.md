@@ -52,7 +52,7 @@ Download the latest release for your platform:
 ```bash
 curl -L https://github.com/angelsintheai/neural-commander/releases/latest/download/neural-commander-linux -o nc
 chmod +x nc
-sudo mv nc /usr/local/bin/
+sudo mv ncmd /usr/local/bin/
 ```
 
 #### Linux (ARM64)
@@ -60,7 +60,7 @@ sudo mv nc /usr/local/bin/
 ```bash
 curl -L https://github.com/angelsintheai/neural-commander/releases/latest/download/neural-commander-linux-arm64 -o nc
 chmod +x nc
-sudo mv nc /usr/local/bin/
+sudo mv ncmd /usr/local/bin/
 ```
 
 #### macOS (Intel)
@@ -68,7 +68,7 @@ sudo mv nc /usr/local/bin/
 ```bash
 curl -L https://github.com/angelsintheai/neural-commander/releases/latest/download/neural-commander-mac-intel -o nc
 chmod +x nc
-sudo mv nc /usr/local/bin/
+sudo mv ncmd /usr/local/bin/
 ```
 
 #### macOS (Apple Silicon)
@@ -76,7 +76,7 @@ sudo mv nc /usr/local/bin/
 ```bash
 curl -L https://github.com/angelsintheai/neural-commander/releases/latest/download/neural-commander-mac-arm64 -o nc
 chmod +x nc
-sudo mv nc /usr/local/bin/
+sudo mv ncmd /usr/local/bin/
 ```
 
 #### Windows
@@ -95,10 +95,10 @@ git clone https://github.com/angelsintheai/neural-commander.git
 cd neural-commander/neural-commander-go
 
 # Build
-go build -o nc ./cmd/nc
+go build -o ncmd ./cmd/nc
 
 # Install (Linux/macOS)
-sudo mv nc /usr/local/bin/
+sudo mv ncmd /usr/local/bin/
 
 # Or add to PATH
 export PATH=$PATH:$(pwd)
@@ -114,14 +114,14 @@ go install github.com/angelsintheai/neural-commander/cmd/nc@latest
 
 ```bash
 # Check version
-nc version
+ncmd version
 
 # Expected output:
 # Neural Commander v0.99 (Community Edition)
 # Build: go1.22.0 linux/amd64
 
 # Check health
-nc health
+ncmd health
 
 # Expected output:
 # Neural Commander Health Check
@@ -136,14 +136,14 @@ nc health
 ### 1. Initialize Configuration
 
 ```bash
-nc init
+ncmd init
 # Creates ~/.neural-commander/ directory with default config
 ```
 
 ### 2. Start the Daemon (Optional)
 
 ```bash
-nc daemon start
+ncmd daemon start
 # Starts background monitoring for projects
 ```
 
@@ -151,7 +151,7 @@ nc daemon start
 
 ```bash
 cd /path/to/your/project
-nc init --project
+ncmd init --project
 # Creates .nc/ directory with project-specific settings
 ```
 
@@ -167,8 +167,8 @@ Download and replace the binary with the latest version.
 cd neural-commander
 git pull
 cd neural-commander-go
-go build -o nc ./cmd/nc
-sudo mv nc /usr/local/bin/
+go build -o ncmd ./cmd/nc
+sudo mv ncmd /usr/local/bin/
 ```
 
 ## Uninstalling

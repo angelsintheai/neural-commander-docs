@@ -52,7 +52,7 @@ NC classifies patterns into 7 categories:
 ### List Your Patterns
 
 ```bash
-nc patterns list
+ncmd patterns list
 ```
 
 ```
@@ -72,7 +72,7 @@ Patterns (showing top 20)
 ### Search Patterns
 
 ```bash
-nc patterns search "error handling"
+ncmd patterns search "error handling"
 ```
 
 ### Apply a Pattern
@@ -80,13 +80,13 @@ nc patterns search "error handling"
 Mark a pattern as used (tracks effectiveness):
 
 ```bash
-nc patterns apply a1b2c3d4
+ncmd patterns apply a1b2c3d4
 ```
 
 ### View Statistics
 
 ```bash
-nc patterns stats
+ncmd patterns stats
 ```
 
 ```
@@ -112,15 +112,15 @@ Average Success Rate: 94.2%
 
 | Command | Description |
 |---------|-------------|
-| `nc patterns list` | Display patterns (top 20 by default) |
-| `nc patterns list --global` | Show all patterns |
-| `nc patterns list --category <cat>` | Filter by category |
-| `nc patterns list --language <lang>` | Filter by language |
-| `nc patterns search <query>` | Full-text search |
-| `nc patterns apply <id>` | Mark pattern as used |
-| `nc patterns sync` | Export to global store (Pro tier) |
-| `nc patterns stats` | View aggregated statistics |
-| `nc patterns remove <id>` | Delete a pattern |
+| `ncmd patterns list` | Display patterns (top 20 by default) |
+| `ncmd patterns list --global` | Show all patterns |
+| `ncmd patterns list --category <cat>` | Filter by category |
+| `ncmd patterns list --language <lang>` | Filter by language |
+| `ncmd patterns search <query>` | Full-text search |
+| `ncmd patterns apply <id>` | Mark pattern as used |
+| `ncmd patterns sync` | Export to global store (Pro tier) |
+| `ncmd patterns stats` | View aggregated statistics |
+| `ncmd patterns remove <id>` | Delete a pattern |
 
 Pattern IDs support partial matching (first 4+ characters).
 
@@ -162,7 +162,7 @@ Only patterns scoring above 0.30 are recommended. Top 10 per project.
 
 ```bash
 # Sync project patterns to global store
-nc patterns sync
+ncmd patterns sync
 
 # Other projects automatically get relevant recommendations
 ```
@@ -219,13 +219,13 @@ curl -X POST http://localhost:7669/api/patterns/relevant \
 
 ### No Patterns Showing
 
-1. Ensure the daemon is running: `nc daemon status`
-2. Check with `--global` flag: `nc patterns list --global`
+1. Ensure the daemon is running: `ncmd daemon status`
+2. Check with `--global` flag: `ncmd patterns list --global`
 3. Work in a Claude Code session with the daemon running to start capturing
 
 ### Sync Fails with Tier Error
 
-Cross-project sync requires Pro tier. Use `nc patterns list` for local patterns on Free tier.
+Cross-project sync requires Pro tier. Use `ncmd patterns list` for local patterns on Free tier.
 
 ### Pattern Not Being Captured
 

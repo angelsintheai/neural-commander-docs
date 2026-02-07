@@ -97,10 +97,10 @@ Duration: Auto-releases after 60 seconds
 
 ```bash
 # Full resource status
-nc status
+ncmd status
 
 # Just governor status
-nc status --governor
+ncmd status --governor
 ```
 
 **Example Output**:
@@ -192,13 +192,13 @@ NC adapts resource usage based on your current workload:
 
 ```bash
 # Light background work
-nc resources mode background
+ncmd resources mode background
 
 # Normal interactive use (default)
-nc resources mode interactive
+ncmd resources mode interactive
 
 # Heavy batch operations
-nc resources mode intensive
+ncmd resources mode intensive
 ```
 
 | Mode | CPU Limit | RAM Limit | GPU Limit | Use Case |
@@ -220,7 +220,7 @@ NC auto-detects and monitors GPUs:
 | **Intel** | Model, memory | Minimal |
 
 ```bash
-nc resources gpu
+ncmd resources gpu
 ```
 
 When GPU temperature exceeds 83°C, thermal throttling activates automatically.
@@ -250,7 +250,7 @@ Standard GOMAXPROCS limiting (75% of cores, minimum 2).
 NC tracks resource usage per Claude Code session:
 
 ```bash
-nc resources sessions
+ncmd resources sessions
 ```
 
 Tracked metrics: tokens used, API calls, memory usage, files read/written, estimated cost.
@@ -262,7 +262,7 @@ Default limits per session: 500K tokens, $1.00 estimated cost, 24-hour duration,
 ### View Settings
 
 ```bash
-nc config get governor
+ncmd config get governor
 ```
 
 ### Adjust Limits (Advanced)
@@ -271,13 +271,13 @@ Most users should use defaults. For advanced use:
 
 ```bash
 # Increase goroutine limit (be careful!)
-nc config set governor.max_goroutines 150
+ncmd config set governor.max_goroutines 150
 
 # Adjust CPU threshold
-nc config set governor.max_cpu_percent 70
+ncmd config set governor.max_cpu_percent 70
 
 # Reset to defaults
-nc config reset governor
+ncmd config reset governor
 ```
 
 **Default Values**:
@@ -294,7 +294,7 @@ nc config reset governor
 
 1. **Check status**:
    ```bash
-   nc status --governor
+   ncmd status --governor
    ```
 
 2. **Look for throttling**:
@@ -304,7 +304,7 @@ nc config reset governor
 
 3. **Wait or restart**:
    - Throttle releases after 30 seconds
-   - Or restart NC: `nc daemon restart`
+   - Or restart NC: `ncmd daemon restart`
 
 ### "Cannot Launch Task" Error
 
@@ -312,7 +312,7 @@ This means you've hit a limit:
 
 ```bash
 # Check current goroutines
-nc status --governor
+ncmd status --governor
 
 # Output shows:
 # Goroutines: 100/100  ← At limit!
@@ -332,7 +332,7 @@ nc status --governor
 **What to do**:
 1. NC will auto-recover in 60 seconds
 2. Close memory-heavy applications
-3. Check for memory leaks: `nc debug memory`
+3. Check for memory leaks: `ncmd debug memory`
 
 ### Circuit Breaker Open
 
@@ -358,7 +358,7 @@ The governor is designed to "just work". Don't disable protections.
 When doing large scans or intensive operations:
 ```bash
 # In another terminal
-watch nc status --governor
+watch ncmd status --governor
 ```
 
 ### 3. Don't Increase Limits Without Reason
@@ -372,7 +372,7 @@ The defaults are conservative for safety. Only increase if you:
 
 If NC triggers emergency mode frequently, that's a bug:
 ```bash
-nc report --include-governor-logs
+ncmd report --include-governor-logs
 ```
 
 ## Common Questions
@@ -391,7 +391,7 @@ nc report --include-governor-logs
 
 ### Q: How do I know if the governor is working?
 
-**A**: Run `nc status --governor`. If you see "NORMAL" status, it's working. You can also check logs:
+**A**: Run `ncmd status --governor`. If you see "NORMAL" status, it's working. You can also check logs:
 ```bash
 grep governor ~/.neural-commander/daemon.log
 ```

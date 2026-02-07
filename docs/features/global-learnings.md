@@ -47,7 +47,7 @@ The system has two subsystems:
 ### 1. Index Your Projects
 
 ```bash
-nc wisdom crawl
+ncmd wisdom crawl
 ```
 
 ```
@@ -64,7 +64,7 @@ Crawl complete in 3.1s
 ### 2. Search Your Knowledge
 
 ```bash
-nc wisdom search "error handling"
+ncmd wisdom search "error handling"
 ```
 
 ```
@@ -83,24 +83,24 @@ Search Results (6 matches)
 
 ```bash
 ollama pull nomic-embed-text
-nc wisdom embed
-nc wisdom semantic "how to handle errors gracefully"
+ncmd wisdom embed
+ncmd wisdom semantic "how to handle errors gracefully"
 ```
 
 ## CLI Commands
 
 | Command | Description |
 |---------|-------------|
-| `nc wisdom crawl` | Index all project documentation |
-| `nc wisdom crawl --project NAME` | Index specific project |
-| `nc wisdom crawl --force` | Re-index everything |
-| `nc wisdom search <query>` | Keyword search across all wisdom |
-| `nc wisdom semantic <query>` | AI-powered semantic search (Pro) |
-| `nc wisdom show <project>` | Project wisdom summary |
-| `nc wisdom stats` | Wisdom engine statistics |
-| `nc wisdom context` | Relevant wisdom for current project |
-| `nc wisdom reindex <project>` | Force re-index specific project |
-| `nc wisdom embed` | Generate embeddings (Pro) |
+| `ncmd wisdom crawl` | Index all project documentation |
+| `ncmd wisdom crawl --project NAME` | Index specific project |
+| `ncmd wisdom crawl --force` | Re-index everything |
+| `ncmd wisdom search <query>` | Keyword search across all wisdom |
+| `ncmd wisdom semantic <query>` | AI-powered semantic search (Pro) |
+| `ncmd wisdom show <project>` | Project wisdom summary |
+| `ncmd wisdom stats` | Wisdom engine statistics |
+| `ncmd wisdom context` | Relevant wisdom for current project |
+| `ncmd wisdom reindex <project>` | Force re-index specific project |
+| `ncmd wisdom embed` | Generate embeddings (Pro) |
 
 ## What Gets Crawled
 
@@ -144,10 +144,10 @@ Generate embeddings for AI-powered search that finds conceptually related conten
 ```bash
 # Setup
 ollama pull nomic-embed-text
-nc wisdom embed
+ncmd wisdom embed
 
 # Search by meaning
-nc wisdom semantic "how to safely stop background processes"
+ncmd wisdom semantic "how to safely stop background processes"
 # Finds documents about "graceful shutdown" even without that keyword
 ```
 
@@ -159,7 +159,7 @@ The Pattern Sync Manager enables cross-project pattern reuse:
 
 ```bash
 # Patterns from one project become available to others
-nc patterns sync
+ncmd patterns sync
 
 # Patterns are scored for relevance to your current project
 # Based on: language match (40%), framework (30%), tags (20%), usage (10%)
@@ -211,18 +211,18 @@ Captured learnings are stored as JSON files in `~/.neural-commander/learnings/`.
 ### "No projects found"
 
 1. Verify the projects root contains projects with marker files (.git, package.json, etc.)
-2. Force crawl: `nc wisdom crawl --force`
+2. Force crawl: `ncmd wisdom crawl --force`
 
 ### Semantic Search Returns No Results
 
-1. Check embedding coverage: `nc wisdom stats`
+1. Check embedding coverage: `ncmd wisdom stats`
 2. Ensure Ollama is running: `curl http://localhost:11434/api/tags`
-3. Generate embeddings: `nc wisdom embed`
+3. Generate embeddings: `ncmd wisdom embed`
 
 ### Search Quality is Poor
 
-1. Re-crawl after documentation changes: `nc wisdom crawl`
-2. Re-embed: `nc wisdom embed`
+1. Re-crawl after documentation changes: `ncmd wisdom crawl`
+2. Re-embed: `ncmd wisdom embed`
 3. Use semantic search for conceptual queries, keyword search for exact terms
 
 ---

@@ -14,7 +14,7 @@ Built on the [Bubble Tea](https://github.com/charmbracelet/bubbletea) framework 
 
 ```bash
 # Launch the console
-nc admin
+ncmd admin
 ```
 
 Press number keys to switch between views:
@@ -161,14 +161,14 @@ All data sources are optional. The console gracefully handles missing sources wi
 
 ## Prerequisites
 
-- NC daemon running: `nc daemon start`
+- NC daemon running: `ncmd daemon start`
 - Terminal with 256-color support
 
 ## Troubleshooting
 
 ### No Events in Monitor
 
-1. Check daemon is running: `nc daemon status`
+1. Check daemon is running: `ncmd daemon status`
 2. Verify log exists: `ls ~/.neural-commander/daemon.log`
 3. Trigger activity by modifying a file in a monitored project
 

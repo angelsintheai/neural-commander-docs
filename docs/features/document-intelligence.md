@@ -33,7 +33,7 @@ Track A owns requirement data. Track B reads it (never writes). They communicate
 ### 1. Scan Documentation
 
 ```bash
-nc docs scan
+ncmd docs scan
 ```
 
 ```
@@ -47,7 +47,7 @@ Scanning documentation...
 ### 2. Check Health
 
 ```bash
-nc docs health
+ncmd docs health
 ```
 
 ```
@@ -70,7 +70,7 @@ Recommendations:
 ### 3. Search
 
 ```bash
-nc docs search "resource governor"
+ncmd docs search "resource governor"
 ```
 
 ```
@@ -88,23 +88,23 @@ Search Results (3 matches)
 
 ## CLI Commands
 
-### `nc docs scan`
+### `ncmd docs scan`
 
 Scan and index project documentation. Results are cached for 24 hours.
 
 ```bash
-nc docs scan                  # Default scan (uses cache)
-nc docs scan --force          # Bypass cache, full rescan
-nc docs scan --project NAME   # Scan specific project
+ncmd docs scan                  # Default scan (uses cache)
+ncmd docs scan --force          # Bypass cache, full rescan
+ncmd docs scan --project NAME   # Scan specific project
 ```
 
-### `nc docs search <query>`
+### `ncmd docs search <query>`
 
 Full-text search across documentation with relevance scoring.
 
 ```bash
-nc docs search "authentication"
-nc docs search "API" --limit 5 --offset 0
+ncmd docs search "authentication"
+ncmd docs search "API" --limit 5 --offset 0
 ```
 
 | Flag | Default | Description |
@@ -112,38 +112,38 @@ nc docs search "API" --limit 5 --offset 0
 | `--limit` | 10 | Maximum results |
 | `--offset` | 0 | Skip first N results |
 
-### `nc docs info`
+### `ncmd docs info`
 
 Show documentation information for a project.
 
 ```bash
-nc docs info neural-commander
+ncmd docs info neural-commander
 ```
 
-### `nc docs health`
+### `ncmd docs health`
 
 Generate a documentation health report with scoring breakdown.
 
 ```bash
-nc docs health
-nc docs health --project dexinator
+ncmd docs health
+ncmd docs health --project dexinator
 ```
 
-### `nc docs validate`
+### `ncmd docs validate`
 
 Validate documentation metadata (frontmatter, links, naming).
 
 ```bash
-nc docs validate
+ncmd docs validate
 ```
 
-### `nc docs cache`
+### `ncmd docs cache`
 
 Manage the documentation index cache.
 
 ```bash
-nc docs cache info      # Show cache statistics
-nc docs cache clear     # Clear all cached data
+ncmd docs cache info      # Show cache statistics
+ncmd docs cache clear     # Clear all cached data
 ```
 
 ## 00-09 Directory Structure
@@ -188,7 +188,7 @@ The health score (0-100) is a composite of 5 metrics, each worth 20 points:
 DI enriches the session context that Claude Code receives. When you generate context:
 
 ```bash
-nc req context --output .claude/context.md
+ncmd req context --output .claude/context.md
 ```
 
 DI adds documentation-related sections:
@@ -249,11 +249,11 @@ Place documents in the correct category folder. DI auto-discovers files based on
 
 ```bash
 # Weekly
-nc docs health
+ncmd docs health
 
 # After reorganization
-nc docs scan --force
-nc docs health
+ncmd docs scan --force
+ncmd docs health
 ```
 
 ### 4. Fix Broken Links Promptly
@@ -265,19 +265,19 @@ Broken cross-references degrade health score and reduce documentation value.
 ### "No documents found"
 
 1. Verify your project has a `docs/` directory
-2. Force rescan: `nc docs scan --force`
-3. Check project filter: `nc docs scan --project <name>`
+2. Force rescan: `ncmd docs scan --force`
+3. Check project filter: `ncmd docs scan --project <name>`
 
 ### Health Score Dropped
 
-1. Run `nc docs health` for specific recommendations
+1. Run `ncmd docs health` for specific recommendations
 2. Common causes: new empty files, deleted link targets, time passing (staleness)
 
 ### Search Returns No Results
 
 1. Try broader terms
-2. Verify scan completed: `nc docs scan`
-3. Clear cache: `nc docs cache clear && nc docs scan --force`
+2. Verify scan completed: `ncmd docs scan`
+3. Clear cache: `ncmd docs cache clear && ncmd docs scan --force`
 
 ---
 

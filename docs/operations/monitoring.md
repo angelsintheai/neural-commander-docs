@@ -60,7 +60,7 @@ fi
 ### Daemon Statistics
 
 ```bash
-nc daemon stats
+ncmd daemon stats
 ```
 
 Output:
@@ -194,7 +194,7 @@ groups:
 ## Admin Console Dashboard
 
 ```bash
-nc admin
+ncmd admin
 ```
 
 Provides real-time views:
@@ -219,7 +219,7 @@ Provides real-time views:
 ### Resource Governor Status
 
 ```bash
-nc daemon status
+ncmd daemon status
 ```
 
 Shows:

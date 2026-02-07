@@ -73,8 +73,8 @@ export NC_TELEGRAM_BOT_TOKEN="your-bot-token"
 ### Step 5: Verify Installation
 
 ```bash
-nc version
-nc daemon status
+ncmd version
+ncmd daemon status
 ```
 
 ---
@@ -216,8 +216,8 @@ sudo systemctl start nc-daemon
 ### 7. Verify
 
 ```bash
-nc version  # Should show new version
-nc daemon status
+ncmd version  # Should show new version
+ncmd daemon status
 curl http://localhost:7669/health
 ```
 
@@ -242,7 +242,7 @@ sudo systemctl start nc-daemon
 
 ### High Resource Usage
 
-1. Check current usage: `nc daemon stats`
+1. Check current usage: `ncmd daemon stats`
 2. Identify cause: `top -p $(pgrep -f neural-commander)`
 3. Lower limits if needed: Edit `/etc/systemd/system/nc-daemon.service`
 4. Restart with new limits: `sudo systemctl daemon-reload && sudo systemctl restart nc-daemon`
@@ -265,7 +265,7 @@ sudo systemctl start nc-daemon
 ### Weekly
 
 - Rotate old checkpoints: `find ~/.nc/data/checkpoints -mtime +7 -delete`
-- Review session crash reports: `nc claude-session list --crashed`
+- Review session crash reports: `ncmd claude-session list --crashed`
 
 ### Monthly
 
@@ -280,5 +280,5 @@ sudo systemctl start nc-daemon
 | Role | Contact |
 |------|---------|
 | Security issues | security@neuralcommander.ai |
-| Bug reports | `nc feedback bug "description"` |
+| Bug reports | `ncmd feedback bug "description"` |
 | Community | Telegram alpha group |

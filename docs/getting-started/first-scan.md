@@ -14,7 +14,7 @@ The quickest way to see NC in action:
 
 ```bash
 cd /path/to/your/project
-nc audit --quick
+ncmd audit --quick
 ```
 
 This runs a fast scan (targeting &lt;30s) that skips heavy directories like `node_modules`, `.git`, and `vendor`.
@@ -51,7 +51,7 @@ Duration: 2.4s
 To save the audit as a markdown report:
 
 ```bash
-nc audit -o
+ncmd audit -o
 ```
 
 This creates a file like `20260117-143022-my-project-audit.md` in the current directory.
@@ -60,10 +60,10 @@ This creates a file like `20260117-143022-my-project-audit.md` in the current di
 
 ```bash
 # Save to reports directory
-nc audit -o ./reports/
+ncmd audit -o ./reports/
 
 # Save with custom filename
-nc audit -o my-project-health.md
+ncmd audit -o my-project-health.md
 ```
 
 ## Full Scan
@@ -71,7 +71,7 @@ nc audit -o my-project-health.md
 For a comprehensive analysis (takes longer):
 
 ```bash
-nc audit
+ncmd audit
 ```
 
 This performs a deeper scan with:

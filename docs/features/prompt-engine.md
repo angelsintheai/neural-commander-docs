@@ -39,7 +39,7 @@ Claude Code Sessions (~/.claude/projects/)
     │                    │
 ┌───┴───┐           ┌───┴────┐
 │  CLI  │           │REST API│
-│(nc    │           │(:7669) │
+│(ncmd    │           │(:7669) │
 │prompts)│          └────────┘
 └────────┘
 ```
@@ -51,7 +51,7 @@ The harvester reads JSONL session files, extracts user prompts, links them to ou
 ### 1. Harvest Prompts
 
 ```bash
-nc prompts harvest
+ncmd prompts harvest
 ```
 
 ```
@@ -67,7 +67,7 @@ Harvest complete in 3.2s
 ### 2. Browse Your Library
 
 ```bash
-nc prompts list
+ncmd prompts list
 ```
 
 ```
@@ -86,30 +86,30 @@ Prompt Library (showing 20 of 179)
 ### 3. Search
 
 ```bash
-nc prompts search "error handling"
+ncmd prompts search "error handling"
 ```
 
 ### 4. Rate a Prompt
 
 ```bash
-nc prompts rate a1b2c3d4 --score 5
+ncmd prompts rate a1b2c3d4 --score 5
 ```
 
 ## CLI Commands
 
 | Command | Description |
 |---------|-------------|
-| `nc prompts harvest` | Collect prompts from Claude Code sessions |
-| `nc prompts list` | List harvested prompts (filterable) |
-| `nc prompts search <query>` | Keyword search (FTS4 with Porter stemming) |
-| `nc prompts search <query> --semantic` | Semantic search via embeddings (Pro) |
-| `nc prompts show <id>` | View full prompt details and outcomes |
-| `nc prompts rate <id> --score N` | Rate a prompt 1-5 stars |
-| `nc prompts stats` | Library statistics by category and project |
-| `nc prompts top` | Highest-scored prompts |
-| `nc prompts embed` | Generate embeddings for semantic search (Pro) |
-| `nc prompts copy <id>` | Copy prompt to clipboard |
-| `nc prompts browse` | Interactive prompt browser |
+| `ncmd prompts harvest` | Collect prompts from Claude Code sessions |
+| `ncmd prompts list` | List harvested prompts (filterable) |
+| `ncmd prompts search <query>` | Keyword search (FTS4 with Porter stemming) |
+| `ncmd prompts search <query> --semantic` | Semantic search via embeddings (Pro) |
+| `ncmd prompts show <id>` | View full prompt details and outcomes |
+| `ncmd prompts rate <id> --score N` | Rate a prompt 1-5 stars |
+| `ncmd prompts stats` | Library statistics by category and project |
+| `ncmd prompts top` | Highest-scored prompts |
+| `ncmd prompts embed` | Generate embeddings for semantic search (Pro) |
+| `ncmd prompts copy <id>` | Copy prompt to clipboard |
+| `ncmd prompts browse` | Interactive prompt browser |
 
 Prompt IDs support partial matching (first 4+ characters).
 
@@ -182,10 +182,10 @@ With Ollama running locally, generate embeddings for AI-powered semantic search:
 ollama pull nomic-embed-text
 
 # Generate embeddings
-nc prompts embed
+ncmd prompts embed
 
 # Search by meaning, not just keywords
-nc prompts search "how to safely stop a background process" --semantic
+ncmd prompts search "how to safely stop a background process" --semantic
 ```
 
 Semantic search uses 384-dimensional vectors and cosine similarity to find conceptually related prompts even without matching keywords.
@@ -221,7 +221,7 @@ curl "http://localhost:7669/api/prompts/top?limit=10"
 
 ## Background Daemon
 
-With the daemon running (`nc daemon start`), harvesting runs automatically every 5 minutes and scoring every 15 minutes. No manual harvesting needed.
+With the daemon running (`ncmd daemon start`), harvesting runs automatically every 5 minutes and scoring every 15 minutes. No manual harvesting needed.
 
 ## Tier Features
 
@@ -240,20 +240,20 @@ With the daemon running (`nc daemon start`), harvesting runs automatically every
 ### "No prompts found"
 
 1. Verify sessions exist: `ls ~/.claude/projects/`
-2. Run harvest: `nc prompts harvest`
+2. Run harvest: `ncmd prompts harvest`
 3. Prompts shorter than 10 or longer than 50,000 chars are filtered
 
 ### Low Scores on Good Prompts
 
-1. Check outcomes: `nc prompts show <id>`
+1. Check outcomes: `ncmd prompts show <id>`
 2. The 5-minute correlation window may miss delayed results
-3. Rate manually: `nc prompts rate <id> --score 5`
+3. Rate manually: `ncmd prompts rate <id> --score 5`
 
 ### Semantic Search Not Working
 
 1. Verify Ollama: `curl http://localhost:11434/api/tags`
 2. Pull model: `ollama pull nomic-embed-text`
-3. Generate embeddings: `nc prompts embed`
+3. Generate embeddings: `ncmd prompts embed`
 
 ---
 

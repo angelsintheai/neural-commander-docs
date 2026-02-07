@@ -16,127 +16,127 @@ The `audit` command is the core of Neural Commander, providing comprehensive pro
 
 ```bash
 # Audit current directory
-nc audit
+ncmd audit
 
 # Audit specific path
-nc audit /path/to/project
+ncmd audit /path/to/project
 
 # Quick scan (fast, <30s target)
-nc audit --quick
+ncmd audit --quick
 
 # Save report to markdown file
-nc audit -o
-nc audit --output
+ncmd audit -o
+ncmd audit --output
 ```
 
 ### Output Options
 
 ```bash
 # Summary output (default)
-nc audit
+ncmd audit
 
 # Full markdown report to stdout
-nc audit --format markdown
+ncmd audit --format markdown
 
 # JSON output for programmatic use
-nc audit --format json
+ncmd audit --format json
 
 # Save markdown to file (auto-generated filename)
-nc audit -o
+ncmd audit -o
 # Creates: YYYYMMDD-HHMMSS-projectname-audit.md
 
 # Save to specific directory
-nc audit -o ./reports/
+ncmd audit -o ./reports/
 
 # Save to specific filename
-nc audit -o my-audit-report.md
+ncmd audit -o my-audit-report.md
 ```
 
 ### Scan Options
 
 ```bash
 # Quick scan - skips heavy directories, max depth 5
-nc audit --quick
+ncmd audit --quick
 
 # Focus on subdirectory
-nc audit --focus neural-commander-go
+ncmd audit --focus neural-commander-go
 
 # Include external repositories
-nc audit --include-external
+ncmd audit --include-external
 
 # Verbose output
-nc audit -v
-nc audit --verbose
+ncmd audit -v
+ncmd audit --verbose
 
 # Don't save to .audit/ directory
-nc audit --save=false
+ncmd audit --save=false
 ```
 
 ### Combining Options
 
 ```bash
 # Quick scan with markdown export
-nc audit --quick -o
+ncmd audit --quick -o
 
 # Full scan focused on subdirectory, save report
-nc audit --focus src -o ./reports/
+ncmd audit --focus src -o ./reports/
 
 # Verbose JSON output
-nc audit -v --format json
+ncmd audit -v --format json
 ```
 
 ## Session Commands
 
 ```bash
 # List all sessions
-nc session list
+ncmd session list
 
 # Show session details
-nc session show <session-id>
+ncmd session show <session-id>
 
 # Resume a session
-nc session resume <session-id>
+ncmd session resume <session-id>
 ```
 
 ## Claude Session Commands
 
 ```bash
 # List Claude Code sessions
-nc claude-session list
+ncmd claude-session list
 
 # Show crashed sessions
-nc claude-session list --crashed
+ncmd claude-session list --crashed
 
 # Resume crashed session
-nc claude-session resume <session-id>
+ncmd claude-session resume <session-id>
 ```
 
 ## Daemon Commands
 
 ```bash
 # Start background daemon
-nc daemon start
+ncmd daemon start
 
 # Stop daemon
-nc daemon stop
+ncmd daemon stop
 
 # Check daemon status
-nc daemon status
+ncmd daemon status
 ```
 
 ## Other Commands
 
 ```bash
 # Show version
-nc version
+ncmd version
 
 # Show help
-nc help
-nc --help
+ncmd help
+ncmd --help
 
 # Chat with AI (requires Ollama)
-nc chat "Your prompt here"
-nc chat --stream "Your prompt"
+ncmd chat "Your prompt here"
+ncmd chat --stream "Your prompt"
 ```
 
 ## Global Flags

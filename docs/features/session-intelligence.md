@@ -55,7 +55,7 @@ Neural Commander persists:
 ### View Sessions
 
 ```bash
-nc session list
+ncmd session list
 ```
 
 ```
@@ -69,22 +69,22 @@ f5e6d7c8  docs-site                 7         3 days ago
 
 ```bash
 # Resume most recent
-nc session resume
+ncmd session resume
 
 # Resume specific session
-nc session resume bd5adee7
+ncmd session resume bd5adee7
 ```
 
 ### Create New Session
 
 ```bash
-nc session new my-new-project
+ncmd session new my-new-project
 ```
 
 ### View Session Details
 
 ```bash
-nc session show bd5adee7
+ncmd session show bd5adee7
 ```
 
 ## Crash Recovery
@@ -100,10 +100,10 @@ When a session crashes, NC automatically:
 
 ```bash
 # Check for crashed sessions
-nc session crashed
+ncmd session crashed
 
 # Recover a crashed session
-nc session recover bd5adee7
+ncmd session recover bd5adee7
 ```
 
 The recovered session includes:
@@ -130,13 +130,13 @@ Checkpoints use delta detection (SHA256 hash) - new checkpoints are only created
 
 ```bash
 # List all sessions with checkpoint counts
-nc checkpoint list
+ncmd checkpoint list
 
 # Show latest checkpoint for a session
-nc checkpoint show bd5adee7
+ncmd checkpoint show bd5adee7
 
 # View checkpoint statistics
-nc checkpoint stats
+ncmd checkpoint stats
 ```
 
 **Example output**:
@@ -167,11 +167,11 @@ A `.nc-session` file in your project root enables automatic session resume witho
 ```bash
 # From project root - auto-detects session
 cd /path/to/project
-nc session resume
+ncmd session resume
 
 # From any subdirectory - walks up to find .nc-session
 cd /path/to/project/src/deep/folder
-nc session resume
+ncmd session resume
 ```
 
 `.nc-session` files are designed to be committed to git, enabling persistent session tracking across terminal restarts and branch switches.
@@ -182,13 +182,13 @@ If the daemon was restarted or sessions were created while the daemon was down:
 
 ```bash
 # Find untracked sessions
-nc claude-session discover
+ncmd claude-session discover
 
 # Show all sessions including old ones
-nc claude-session discover --all
+ncmd claude-session discover --all
 
 # Manually add a session to monitoring
-nc claude-session track <session-id>
+ncmd claude-session track <session-id>
 ```
 
 ## Session Data
@@ -201,17 +201,17 @@ Sessions are tracked from Claude Code's JSONL files in `~/.claude/projects/`. NC
 
 ```bash
 cd /path/to/project
-nc session new $(basename $(pwd))
+ncmd session new $(basename $(pwd))
 ```
 
 ### 2. Resume Don't Restart
 
 ```bash
 # Good - maintains context
-nc session resume
+ncmd session resume
 
 # Avoid - loses context
-nc session new duplicate-project
+ncmd session new duplicate-project
 ```
 
 ### 3. Capture Important Decisions
@@ -219,14 +219,14 @@ nc session new duplicate-project
 When you make a significant decision during a session, NC captures it automatically. You can also manually note:
 
 ```bash
-nc learn "Use PostgreSQL for persistence"
+ncmd learn "Use PostgreSQL for persistence"
 ```
 
 ### 4. Archive Old Sessions
 
 ```bash
 # Archive sessions older than 30 days
-nc session archive --older-than 30d
+ncmd session archive --older-than 30d
 ```
 
 ## Auto-Session Tracking
@@ -266,10 +266,10 @@ Auto-tracking is enabled by default when the daemon runs:
 
 ```bash
 # Start daemon (auto-tracking included)
-nc daemon start
+ncmd daemon start
 
 # Check tracking status
-nc daemon status
+ncmd daemon status
 ```
 
 **Output includes**:
@@ -294,13 +294,13 @@ Active sessions: 1
 
 ```bash
 # List Claude Code sessions
-nc claude-session list
+ncmd claude-session list
 
 # View specific session
-nc claude-session show <session-id>
+ncmd claude-session show <session-id>
 
 # Show active session
-nc claude-session active
+ncmd claude-session active
 ```
 
 ### Watch Mode
@@ -308,7 +308,7 @@ nc claude-session active
 Monitor sessions in real-time:
 
 ```bash
-nc claude-session watch
+ncmd claude-session watch
 ```
 
 **Output**:
@@ -328,11 +328,11 @@ When a Claude Code session crashes unexpectedly:
 1. NC detects the abnormal termination
 2. Marks session as "crashed" with last known state
 3. Preserves context for recovery
-4. Alerts you on next `nc status` check
+4. Alerts you on next `ncmd status` check
 
 ```bash
 # Check for crashed sessions
-nc claude-session crashed
+ncmd claude-session crashed
 
 # Output:
 # CRASHED SESSIONS
@@ -359,19 +359,19 @@ This hybrid approach solves reliability issues, especially on WSL2 where file sy
   - If process found → **Active** (override stale file time)
   - If no process → **Crashed**
 
-This ensures that `nc claude-session list` and `nc claude-session show` always report consistent state.
+This ensures that `ncmd claude-session list` and `ncmd claude-session show` always report consistent state.
 
 ### Configuration
 
 ```bash
 # Set detection interval (seconds)
-nc config set claude_session.detect_interval 30
+ncmd config set claude_session.detect_interval 30
 
 # Set crash timeout (detect crash after N seconds inactive)
-nc config set claude_session.crash_timeout 300
+ncmd config set claude_session.crash_timeout 300
 
 # Enable/disable notifications
-nc config set claude_session.notifications true
+ncmd config set claude_session.notifications true
 ```
 
 ### API Endpoints

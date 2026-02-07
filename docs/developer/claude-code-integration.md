@@ -22,7 +22,7 @@ NC daemon injects alerts into your CLAUDE.md:
 ## Session Resume
 
 ```bash
-nc session resume
+ncmd session resume
 ```
 
 *Full integration guide coming soon.*

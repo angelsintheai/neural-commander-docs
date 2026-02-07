@@ -65,7 +65,7 @@ $env:PATH += ";$env:USERPROFILE\.local\bin"
 ### Step 3: Verify Installation
 
 ```bash
-nc version
+ncmd version
 # Neural Commander v0.99.0-beta
 # Edition: Community Edition
 ```
@@ -78,13 +78,13 @@ nc version
 cd /path/to/your/project
 
 # Fast scan (recommended first time)
-nc audit --quick
+ncmd audit --quick
 
 # Save report to markdown file
-nc audit --quick -o
+ncmd audit --quick -o
 
 # Full scan (more thorough, takes longer)
-nc audit
+ncmd audit
 ```
 
 This scans your project for:
@@ -98,7 +98,7 @@ The `-o` flag saves a markdown report with auto-generated filename like `2026011
 ### 2. Start the Daemon
 
 ```bash
-nc daemon start
+ncmd daemon start
 ```
 
 The daemon enables:
@@ -109,7 +109,7 @@ The daemon enables:
 ### 3. View Admin Console
 
 ```bash
-nc admin
+ncmd admin
 ```
 
 A terminal UI dashboard showing:
@@ -124,7 +124,7 @@ Press `q` to exit.
 If you use Claude Code:
 
 ```bash
-nc claude-session list
+ncmd claude-session list
 ```
 
 Shows your Claude Code sessions with crash detection.
@@ -133,7 +133,7 @@ Shows your Claude Code sessions with crash detection.
 
 ```bash
 # Requires Ollama running
-nc chat "Write a Python function to reverse a string"
+ncmd chat "Write a Python function to reverse a string"
 ```
 
 ## What's Next?
@@ -147,7 +147,7 @@ nc chat "Write a Python function to reverse a string"
 
 - NC works with zero configuration out of the box
 - Sessions persist across restarts - pick up where you left off
-- Use `nc --help` to see all available commands
+- Use `ncmd --help` to see all available commands
 - The daemon runs in background for real-time project monitoring
 
 ---

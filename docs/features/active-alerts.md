@@ -81,7 +81,7 @@ NC adds three sections to your CLAUDE.md:
 ### 1. Initialize NC
 
 ```bash
-nc init
+ncmd init
 ```
 
 Follow the prompts to:
@@ -91,17 +91,17 @@ Follow the prompts to:
 
 For headless setup:
 ```bash
-nc init --yes --projects-dir ~/dev
+ncmd init --yes --projects-dir ~/dev
 ```
 
 ### 2. Verify Alerts Are Working
 
 ```bash
 # Check daemon is running
-nc daemon status
+ncmd daemon status
 
 # View current alerts
-nc alerts list
+ncmd alerts list
 ```
 
 ### 3. See It In Action
@@ -113,31 +113,31 @@ Make a code change without committing. Within 30 seconds, check your CLAUDE.md â
 ### Alert Management
 
 ```bash
-nc alerts list                              # Show all current alerts
-nc alerts list --project my-project         # Alerts for specific project
-nc alerts show ALERT-001                    # Show alert details
-nc alerts dismiss ALERT-001                 # Dismiss specific alert
-nc alerts snooze ALERT-001 --duration 1h    # Snooze for 1 hour
-nc alerts refresh --project my-project      # Force update
+ncmd alerts list                              # Show all current alerts
+ncmd alerts list --project my-project         # Alerts for specific project
+ncmd alerts show ALERT-001                    # Show alert details
+ncmd alerts dismiss ALERT-001                 # Dismiss specific alert
+ncmd alerts snooze ALERT-001 --duration 1h    # Snooze for 1 hour
+ncmd alerts refresh --project my-project      # Force update
 ```
 
 ### Project Management
 
 ```bash
-nc projects list                            # List monitored projects
-nc projects add my-project                  # Add project to monitoring
-nc projects remove my-project               # Stop monitoring
-nc projects show my-project                 # Show project details
-nc projects uninstall my-project            # Remove NC from project
+ncmd projects list                            # List monitored projects
+ncmd projects add my-project                  # Add project to monitoring
+ncmd projects remove my-project               # Stop monitoring
+ncmd projects show my-project                 # Show project details
+ncmd projects uninstall my-project            # Remove NC from project
 ```
 
 ### Daemon Control
 
 ```bash
-nc daemon status                            # Check daemon status
-nc daemon start                             # Start daemon
-nc daemon restart                           # Restart daemon
-nc daemon install-service                   # Install as system service
+ncmd daemon status                            # Check daemon status
+ncmd daemon start                             # Start daemon
+ncmd daemon restart                           # Restart daemon
+ncmd daemon install-service                   # Install as system service
 ```
 
 ## What CLAUDE.md Looks Like
@@ -203,7 +203,7 @@ monitored_projects:
 ```bash
 # Linux/Mac: Add to ~/.bashrc or ~/.zshrc
 if ! pgrep -x "neural-commander" > /dev/null; then
-    nc daemon start &
+    ncmd daemon start &
 fi
 ```
 
@@ -214,9 +214,9 @@ fi
 ```bash
 #!/bin/bash
 # Block commits when CRITICAL alerts exist
-if nc alerts list --severity CRITICAL --count > /dev/null 2>&1; then
+if ncmd alerts list --severity CRITICAL --count > /dev/null 2>&1; then
     echo "CRITICAL NC alerts detected!"
-    nc alerts list --severity CRITICAL
+    ncmd alerts list --severity CRITICAL
     exit 1
 fi
 ```
@@ -226,8 +226,8 @@ fi
 ```yaml
 - name: Check NC Alerts
   run: |
-    nc init --yes --projects-dir .
-    if nc alerts list --severity CRITICAL --count; then
+    ncmd init --yes --projects-dir .
+    if ncmd alerts list --severity CRITICAL --count; then
       echo "CRITICAL alerts detected"
       exit 1
     fi
@@ -249,7 +249,7 @@ What makes Active Alerts unique:
 2. **Address CRITICAL immediately** - Stop current work and fix
 3. **Customize thresholds early** - Tune alert timing to your workflow
 4. **Start daemon at boot** - Ensures continuous monitoring
-5. **Check before committing** - Run `nc alerts list` before every commit
+5. **Check before committing** - Run `ncmd alerts list` before every commit
 
 ## Tier Features
 
@@ -269,21 +269,21 @@ What makes Active Alerts unique:
 
 ### Alerts Not Appearing
 
-1. Check daemon is running: `nc daemon status`
-2. Verify project is monitored: `nc projects list`
-3. Force refresh: `nc alerts refresh --project my-project`
+1. Check daemon is running: `ncmd daemon status`
+2. Verify project is monitored: `ncmd projects list`
+3. Force refresh: `ncmd alerts refresh --project my-project`
 
 ### CLAUDE.md Not Being Updated
 
 1. Verify NC has write access to the file
 2. Check for NC markers: look for `<!-- NC-ALERTS-START -->` in CLAUDE.md
-3. Re-initialize: `nc projects uninstall my-project && nc projects add my-project`
+3. Re-initialize: `ncmd projects uninstall my-project && ncmd projects add my-project`
 
 ### Too Many Alerts
 
 1. Increase thresholds in config
 2. Disable noisy detectors
-3. Use `nc alerts snooze` for temporary suppression
+3. Use `ncmd alerts snooze` for temporary suppression
 
 ## FAQ
 

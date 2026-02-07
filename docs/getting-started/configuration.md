@@ -94,16 +94,16 @@ Most config options can be overridden via CLI:
 
 ```bash
 # Start unified daemon (REST API on 7669, MCP on 7671)
-nc daemon
+ncmd daemon
 
 # Daemon without REST API (MCP only)
-nc daemon --no-api
+ncmd daemon --no-api
 
 # Suppress resource governor messages
-nc -q daemon
+ncmd -q daemon
 
 # Specific model for chat
-nc chat "question" --model codellama:13b
+ncmd chat "question" --model codellama:13b
 ```
 
 ## Configuration Precedence
@@ -158,13 +158,13 @@ daemon:
 
 ```bash
 # Check config
-nc config validate
+ncmd config validate
 
 # Show effective config
-nc config show
+ncmd config show
 
 # Reset to defaults
-nc config reset
+ncmd config reset
 ```
 
 ---

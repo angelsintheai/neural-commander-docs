@@ -10,7 +10,7 @@ description: Set up your dev environment
 git clone https://github.com/angelsintheai/neural-commander.git
 cd neural-commander/neural-commander-go
 go mod download
-go build -o nc ./cmd/nc
+go build -o ncmd ./cmd/nc
 ```
 
 *Full setup guide coming soon.*

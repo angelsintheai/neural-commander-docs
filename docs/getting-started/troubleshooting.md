@@ -14,16 +14,16 @@ description: Common issues and solutions
 
 ```bash
 # Check NC is working
-nc version
+ncmd version
 
 # Check daemon status
-nc daemon status
+ncmd daemon status
 
 # Check API server
 curl http://localhost:7669/health
 
 # View recent logs
-nc daemon logs --tail 50
+ncmd daemon logs --tail 50
 ```
 
 ---
@@ -50,7 +50,7 @@ ln -s /path/to/neural-commander ~/.local/bin/nc
 
 ### 2. Daemon Won't Start
 
-**Symptoms**: `nc daemon status` shows "not running"
+**Symptoms**: `ncmd daemon status` shows "not running"
 
 **Check 1: Port in use**
 ```bash
@@ -61,7 +61,7 @@ lsof -i :7669
 **Check 2: Previous instance**
 ```bash
 pkill -f neural-commander
-nc daemon start
+ncmd daemon start
 ```
 
 **Check 3: Permissions**
@@ -82,10 +82,10 @@ sudo chown -R $USER:$USER ~/.nc/
 **Fix**:
 ```bash
 # Start daemon
-nc daemon start
+ncmd daemon start
 
 # Verify port
-nc daemon status
+ncmd daemon status
 # Look for "API: localhost:7669"
 ```
 
@@ -93,7 +93,7 @@ nc daemon status
 
 ### 4. Session Recovery Not Working
 
-**Symptoms**: `nc claude-session list` shows no sessions
+**Symptoms**: `ncmd claude-session list` shows no sessions
 
 **Check 1: Claude Code running?**
 ```bash
@@ -109,7 +109,7 @@ ls ~/.claude/
 
 **Check 3: Watcher enabled?**
 ```bash
-nc daemon status
+ncmd daemon status
 # Look for "Session Watcher: active"
 ```
 
@@ -121,17 +121,17 @@ nc daemon status
 
 **Check current limits**:
 ```bash
-nc daemon status
+ncmd daemon status
 # Look for Resource Governor settings
 ```
 
 **Adjust limits**:
 ```bash
 # Set lower CPU limit
-nc daemon start --max-cpu 50
+ncmd daemon start --max-cpu 50
 
 # Set memory limit
-nc daemon start --max-memory 2048
+ncmd daemon start --max-memory 2048
 ```
 
 **Kill runaway process**:
@@ -168,7 +168,7 @@ sudo systemctl start ollama
 
 ### 7. Feedback Command Fails
 
-**Symptoms**: `nc feedback bug "..."` errors
+**Symptoms**: `ncmd feedback bug "..."` errors
 
 **Check 1: Storage directory**
 ```bash
@@ -193,7 +193,7 @@ echo $NC_GITHUB_TOKEN
 
 ### 8. Admin Console Crashes
 
-**Symptoms**: `nc admin` exits immediately or garbles terminal
+**Symptoms**: `ncmd admin` exits immediately or garbles terminal
 
 **Check 1: Terminal compatibility**
 ```bash
@@ -218,15 +218,15 @@ stty sane
 
 ### 9. Audit Command Hangs
 
-**Symptoms**: `nc audit` runs forever on large repos
+**Symptoms**: `ncmd audit` runs forever on large repos
 
 **Cause**: Scanning too many files
 
 **Fix**: Use quick mode
 ```bash
-nc audit --quick
+ncmd audit --quick
 # Or limit scope
-nc audit --category git
+ncmd audit --category git
 ```
 
 ---
@@ -310,11 +310,11 @@ grep -i error ~/.nc/logs/*.log
 ```bash
 #!/bin/bash
 echo "=== NC Diagnostics ==="
-echo "Version: $(nc version 2>&1 | head -1)"
-echo "Daemon: $(nc daemon status 2>&1 | grep -E 'Status|API')"
+echo "Version: $(ncmd version 2>&1 | head -1)"
+echo "Daemon: $(ncmd daemon status 2>&1 | grep -E 'Status|API')"
 echo "Disk: $(du -sh ~/.nc/ 2>/dev/null || echo 'N/A')"
 echo "Ollama: $(curl -s http://localhost:11434/api/tags | head -c 50 || echo 'Not running')"
-echo "Sessions: $(nc claude-session list 2>&1 | wc -l) found"
+echo "Sessions: $(ncmd claude-session list 2>&1 | wc -l) found"
 ```
 
 ### Export Debug Bundle
@@ -323,8 +323,8 @@ echo "Sessions: $(nc claude-session list 2>&1 | wc -l) found"
 # Create debug bundle for support
 mkdir -p /tmp/nc-debug
 cp ~/.nc/logs/*.log /tmp/nc-debug/
-nc version > /tmp/nc-debug/version.txt
-nc daemon status > /tmp/nc-debug/status.txt 2>&1
+ncmd version > /tmp/nc-debug/version.txt
+ncmd daemon status > /tmp/nc-debug/status.txt 2>&1
 tar -czf nc-debug-$(date +%Y%m%d).tar.gz -C /tmp nc-debug
 ```
 
@@ -334,7 +334,7 @@ tar -czf nc-debug-$(date +%Y%m%d).tar.gz -C /tmp nc-debug
 
 1. **Check logs first**: Most issues have clues in `~/.nc/logs/`
 2. **Search existing issues**: https://github.com/angelsintheai/neural-commander/issues
-3. **Submit feedback**: `nc feedback bug "description of issue"`
+3. **Submit feedback**: `ncmd feedback bug "description of issue"`
 4. **Community**: Telegram alpha group (if member)
 
 ---
@@ -354,7 +354,7 @@ rm -rf ~/.nc/data ~/.nc/logs
 rm -rf ~/.nc
 
 # Restart
-nc daemon start
+ncmd daemon start
 ```
 
 ---
@@ -386,5 +386,5 @@ These issues were resolved in v0.98.3 and should not occur in v0.99.0-beta or la
 <details>
 <summary>14. Docs Search Pagination Not Working (fixed v0.98.3)</summary>
 
-**Cause**: `nc docs search` returned all results with no pagination. Fixed by adding `--limit` and `--offset` flags. Default now shows first 20 results.
+**Cause**: `ncmd docs search` returned all results with no pagination. Fixed by adding `--limit` and `--offset` flags. Default now shows first 20 results.
 </details>

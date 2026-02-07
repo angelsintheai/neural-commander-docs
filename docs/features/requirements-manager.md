@@ -25,7 +25,7 @@ YAML Requirements          Requirements Manager           Claude Code
 ### 1. Check System Health
 
 ```bash
-nc req health
+ncmd req health
 ```
 
 ```
@@ -40,7 +40,7 @@ Status: HEALTHY
 ### 2. List Requirements
 
 ```bash
-nc req list
+ncmd req list
 ```
 
 ```
@@ -55,7 +55,7 @@ Total: 89 requirements
 ### 3. Generate Context for Claude Code
 
 ```bash
-nc req context --output .claude/context.md
+ncmd req context --output .claude/context.md
 ```
 
 Claude Code reads this file to understand your requirements, priorities, and what needs work.
@@ -151,72 +151,72 @@ ACTIVE --> SUPERSEDED (replaced)
 
 ```bash
 # List all
-nc req list
+ncmd req list
 
 # Filter by category, severity, or status
-nc req list --category SECURITY
-nc req list --severity CRITICAL
-nc req list --status ACTIVE
+ncmd req list --category SECURITY
+ncmd req list --severity CRITICAL
+ncmd req list --status ACTIVE
 
 # Combine filters
-nc req list --category FUNCTIONAL --severity HIGH --status ACTIVE
+ncmd req list --category FUNCTIONAL --severity HIGH --status ACTIVE
 
 # Filter by tags
-nc req list --tags security,authentication
+ncmd req list --tags security,authentication
 
 # Limit results
-nc req list --limit 10
+ncmd req list --limit 10
 ```
 
 ### Show Requirement Details
 
 ```bash
-nc req show REQ-NC-012
+ncmd req show REQ-NC-012
 ```
 
 ### Import Requirements
 
 ```bash
 # Import a single file
-nc req import requirements.yaml
+ncmd req import requirements.yaml
 
 # Import with merge (update existing)
-nc req import requirements.yaml --merge
+ncmd req import requirements.yaml --merge
 
 # Import entire directory
-nc req import docs/06-planning/requirements/
+ncmd req import docs/06-planning/requirements/
 ```
 
 ### Export Requirements
 
 ```bash
 # Export all
-nc req export all-requirements.yaml
+ncmd req export all-requirements.yaml
 
 # Export filtered
-nc req export security-reqs.yaml --category SECURITY
+ncmd req export security-reqs.yaml --category SECURITY
 ```
 
 ### Generate Session Context
 
 ```bash
 # Standard output
-nc req context --output .claude/context.md
+ncmd req context --output .claude/context.md
 
 # Compact mode (60% smaller)
-nc req context --compact --output .claude/context.md
+ncmd req context --compact --output .claude/context.md
 
 # Include code examples
-nc req context --examples
+ncmd req context --examples
 
 # JSON output
-nc req context --json
+ncmd req context --json
 ```
 
 ### View Statistics
 
 ```bash
-nc req stats
+ncmd req stats
 ```
 
 ```
@@ -238,10 +238,10 @@ Implementation Rate: 47.2%
 
 ```bash
 # Convert Track B (single-req) to Track A (multi-req) format
-nc req convert REQ-NC-012.yaml --output converted/
+ncmd req convert REQ-NC-012.yaml --output converted/
 
 # Convert directory
-nc req convert --dir requirements/ --output converted/
+ncmd req convert --dir requirements/ --output converted/
 ```
 
 ## Session Context Integration
@@ -250,7 +250,7 @@ The most powerful feature is generating context for Claude Code:
 
 ```bash
 # Before starting Claude Code work
-nc req context --output .claude/context.md
+ncmd req context --output .claude/context.md
 ```
 
 The generated context includes:
@@ -324,7 +324,7 @@ Always include `related_files` and `related_tests`.
 ### 4. Refresh Context Before Sessions
 
 ```bash
-nc req context --output .claude/context.md
+ncmd req context --output .claude/context.md
 ```
 
 Stale context is worse than no context.
@@ -340,7 +340,7 @@ dependencies:
 
 ### No Requirements Found
 
-1. Import requirements: `nc req import docs/06-planning/requirements/`
+1. Import requirements: `ncmd req import docs/06-planning/requirements/`
 2. Check YAML files exist in your requirements directory
 
 ### Import Validation Error
@@ -349,7 +349,7 @@ Use valid enum values for category (FUNCTIONAL, SECURITY, etc.), severity (CRITI
 
 ### Empty Context Output
 
-1. Check requirements are loaded: `nc req health`
+1. Check requirements are loaded: `ncmd req health`
 2. Import requirements first if health shows 0
 
 ---
